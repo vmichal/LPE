@@ -1,0 +1,26 @@
+﻿{
+	"configurations": [
+		{
+			"name": "Linux-Debug",
+			"generator": "Ninja",
+			"configurationType": "Debug",
+			"cmakeExecutable": "/usr/bin/cmake",
+			"remoteCopySourcesExclusionList": [ ".vs", ".git", "out" ],
+			"cmakeCommandArgs": "",
+			"buildCommandArgs": "",
+			"ctestCommandArgs": "",
+			"cmakeToolchain": "toolchain.cmake",
+			"inheritEnvironments": [ "linux_x64" ],
+			"remoteMachineName": "1773855479;Vojta (username=vomi, port=22, authentication=Password)",
+			"remoteCMakeListsRoot": "/mnt/c/Users/vomi/source/repos/LPE/code/",
+			"remoteBuildRoot": "/mnt/c/Users/vomi/source/repos/LPE/code/build",
+			"remoteInstallRoot": "/mnt/c/Users/vomi/source/repos/LPE/code/build",
+			"remoteCopySources": false,
+			"rsyncCommandArgs": "-t --delete --delete-excluded",
+			"remoteCopyBuildOutput": false,
+			"remoteCopySourcesMethod": "rsync",
+			"addressSanitizerRuntimeFlags": "detect_leaks=0",
+			"variables": []
+		}
+	]
+}
