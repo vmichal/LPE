@@ -1,0 +1,3 @@
+[submodule "code/ufsel"]
+	path = code/ufsel
+	url = git@eforce1.feld.cvut.cz:vomi/ufsel.git
