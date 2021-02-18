@@ -95,10 +95,9 @@ enum class MeasurementState {
 
 //Wraps basic timers TIM6, TIM7 with megahertz frequency
 struct MicrosecondTimer {
-	static_assert(TIM14_frequency == TIM17_frequency && TIM16_frequency == TIM17_frequency && TIM17_frequency == 1'000'000_Hz, "You better fulfil this to get microsecond resolution.");
+	static_assert(TIM16_frequency == TIM17_frequency && TIM17_frequency == 1'000'000_Hz, "You better fulfil this to get microsecond resolution.");
 
-	//TIM6 will be used for task timing, TIM7 for timing of the whole main loop
-	static inline std::array timers {*TIM14, *TIM16, *TIM17};
+	static inline std::array timers {*TIM16, *TIM17};
 
 private:
 	TIM_TypeDef& timer_;
@@ -126,6 +125,35 @@ public:
 	}
 
 	static void Initialize();
+
+};
+
+struct PWM_OUT {
+
+	TIM_TypeDef * const tim_;
+
+	PWM_OUT(TIM_TypeDef* const tim) : tim_{tim} {
+		using namespace ufsel;
+		//Let the timer assert the update flag only on counter overflow
+		bit::set(std::ref(tim_->CR1), TIM_CR1_URS);
+		tim_->CNT = 0;
+		tim_->PSC = 480 - 1; //make the timer count @ 100 kHz
+		tim_->ARR = 100;
+
+		//Configure the output capture unit
+		bit::modify(std::ref(tim_->CCMR1), bit::bitmask_of_width(3), 0b110, TIM_CCMR1_OC1M_Pos);
+		bit::set(std::ref(tim_->CCMR1), TIM_CCMR1_OC1PE); //Preload capture/compare register
+		//CC unit is configured as output by default
+
+		bit::set(std::ref(tim_->CCER), TIM_CCER_CC1E); //enable capture-compare unit 1
+
+		bit::set(std::ref(tim_->CR1), TIM_CR1_CEN); //Enable counter
+	}
+
+
+	void set_duty_cycle(int percent) {
+		tim_->CCR1 = percent;
+	}
 
 };
 

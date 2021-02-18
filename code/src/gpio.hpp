@@ -19,12 +19,14 @@ namespace gpio {
 			return Pin { ports[port - 'A'], uint16_t(1 << pin), mode, speed, pull };
 		}
 
+		constexpr auto PWM_OUT = P('A', 7, Pin::Mode::alternatePP, Pin::Speed::fast, Pin::Pull::none);
+
 		constexpr auto LED_A = P('A', 3, Pin::Mode::outPP, Pin::Speed::slow, Pin::Pull::none);
 		constexpr auto LED_B = P('A', 4, Pin::Mode::outPP, Pin::Speed::slow, Pin::Pull::none);
 
-		constexpr std::array all_pins {
-			LED_A, LED_B
-		};
+		constexpr std::array all_pins{
+			PWM_OUT
+		}
 	}
 
 
@@ -36,6 +38,7 @@ namespace gpio {
 	void InitializePin(Pin const& pin);
 
 
+	void makeFloating(Pin const& pin);
 
 }
 

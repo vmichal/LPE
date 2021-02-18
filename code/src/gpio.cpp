@@ -12,7 +12,6 @@
 
 #include <ufsel/bit_operations.hpp>
 
-
 namespace gpio {
 
 	using namespace pins;
@@ -27,6 +26,16 @@ namespace gpio {
 		bit::sliceable_reference{port.OTYPER}[pinIndex] = static_cast<int>(pin.mode_) > 16;
 		bit::modify(std::ref(port.OSPEEDR), bit::bitmask_of_width(2), static_cast<int>(pin.speed_), 2 * pinIndex);
 		bit::modify(std::ref(port.PUPDR), bit::bitmask_of_width(2), static_cast<int>(pin.pull_), 2 * pinIndex);
+
+		bit::modify(std::ref(port.AFR[pinIndex / 8]), bit::bitmask_of_width(4), pin.alternate_, 4 * (pinIndex % 8));
+	}
+
+	void makeFloating(Pin const& pin) {
+		Pin floating_pin = pin;
+		floating_pin.mode_ = Pin::Mode::input;
+		floating_pin.pull_ = Pin::Pull::none;
+
+		InitializePin(floating_pin);
 	}
 
 	void Initialize(void)

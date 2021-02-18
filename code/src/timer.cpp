@@ -17,7 +17,6 @@ void MicrosecondTimer::Initialize()
     using namespace ufsel;
 
     //enable clock to peripherals
-    bit::set(std::ref(RCC->APB1ENR), RCC_APB1ENR_TIM14EN);
     bit::set(std::ref(RCC->APB2ENR), RCC_APB2ENR_TIM16EN, RCC_APB2ENR_TIM17EN);
 
     for (auto& timer : timers) {

@@ -23,8 +23,8 @@ struct Pin {
 		slow = 0, medium = 1, fast = 3
 	};
 
-	constexpr Pin(std::uintptr_t gpio, uint16_t mask, Mode mode, Speed speed, Pull pull)
-		: address(gpio), pin(mask), mode_{mode}, pull_{pull}, speed_{speed} {}
+	constexpr Pin(std::uintptr_t gpio, uint16_t mask, Mode mode, Speed speed, Pull pull, unsigned char alternate = 0)
+		: address(gpio), pin(mask), mode_{mode}, pull_{pull}, speed_{speed}, alternate_{alternate} {}
 
 	GPIO_TypeDef* gpio() const {
 		return reinterpret_cast<GPIO_TypeDef*>(address);
@@ -58,6 +58,7 @@ struct Pin {
 	Mode const mode_;
 	Pull const pull_;
 	Speed const speed_;
+	unsigned char const alternate_;
 };
 
 template <unsigned int bits, typename ShiftReg_t = uint32_t>
