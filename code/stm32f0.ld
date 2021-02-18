@@ -33,7 +33,7 @@ SECTIONS
     KEEP(*(.isr_vector)) /* Startup code */
     _eisr_vector = .;
     . = ALIGN(4);
-  } > RAM AT> FLASH
+  } > FLASH
 
   /* The program code and other data goes into FLASH */
   .text :
@@ -51,7 +51,7 @@ SECTIONS
 
     . = ALIGN(4);
     _etext = .;        /* define a global symbols at end of code */
-  } > RAM AT> FLASH
+  } > FLASH
 
     /* .ctors .dtors are used for c++ constructors/destructors */
     .ctors :
@@ -79,7 +79,7 @@ SECTIONS
     *(.rodata*)        /* .rodata* sections (constants, strings, etc.) */
     _erodata = .;
     . = ALIGN(4);
-  } > RAM AT> FLASH
+  } > FLASH
 
   .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) } >FLASH
   .ARM : {

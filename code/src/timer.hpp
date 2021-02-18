@@ -19,7 +19,7 @@
 
 #include <cstdint>
 
-extern std::uint32_t volatile const SystemTicks;
+extern std::uint32_t volatile SystemTicks;
 void BlockingDelay(Duration time);
 
 struct Timestamp {

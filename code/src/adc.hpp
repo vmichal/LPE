@@ -6,7 +6,7 @@
 
 #include <ufsel/units.hpp>
 
-namespace adc {
+namespace bsp::adc {
 
 	//Integrated ADC has 12bit resultion and reference voltage 3.3 V
 	constexpr Voltage Vdda = 3300_mV;

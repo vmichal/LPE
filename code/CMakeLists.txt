@@ -12,7 +12,7 @@ set(SRC
         src/timer.cpp
         src/adc.cpp
         src/flash.cpp
-
+        src/entry_point.cpp
         )
 
 add_executable(${PROJECT_NAME}.elf ${SRC} ${CAN_SRC})

@@ -7,7 +7,7 @@
 #include <cstdio>
 #include <array>
 
-namespace adc {
+namespace bsp::adc {
 
     static volatile uint16_t readings[regularConversionLength];
 

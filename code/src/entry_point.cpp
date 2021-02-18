@@ -1,34 +1,21 @@
 
 
 /* Includes -------------------------------------------------------------------*/
-#include "stm32f10x.h"
-#include <Drivers/Cmsis/core_cm3.h>
+#include <Drivers/stm32f042x6.h>
+#include <Drivers/core_cm0.h>
 #include <ufsel/bit_operations.hpp>
 #include "adc.hpp"
 #include "gpio.hpp"
-#include "can.hpp"
 #include "timer.hpp"
-#include "spi.hpp"
 #include "core.hpp"
 
-#include "watchdogs.hpp"
-#include <AMS/ecua_options.hpp>
-#include <AMS/canprotocol.hpp>
-#include <CANdb/can_AMS.h>
-#include <bootloader/API/BLdriver.hpp>
 #include <cstddef>
 
 std::uint32_t volatile SystemTicks;
 
 //Called immediatelly after reset (first executed instructions, .data and .bss are not yet initialized)
-//therefore the only memory are we can safely access is the backup domain
 void SystemInit(void)
 {
-
-	//Even the backup domain clock must be initialized after the IWDG.
-	//Should anything sideways, the watchdog must monitor the firmware
-	bsp::backup_domain::enable_clock();
-
 	//one wait state on flash accesses (SYSCLK is running at 48MHz)
 	ufsel::bit::modify(std::ref(FLASH->ACR), ufsel::bit::bitmask_of_width(3), 0b01);
 	bsp::clock::Initialize();
@@ -144,7 +131,7 @@ extern "C" {
 		SystemInit();
 
 		std::fill(_sbss, _ebss, 0); //clear .bss
-		std::copy_n(_load_data, _sdata, std::distance(_sdata, _edata)); //initialize .data
+		std::copy_n(_load_data, std::distance(_sdata, _edata), _sdata); //initialize .data
 
 		__libc_init_array();
 
@@ -158,9 +145,6 @@ extern "C" {
 		gpio::Initialize();
 
 		bsp::adc::Init();
-
-		gpio::LED_Blue_On();
-		gpio::LED_Orange_On();
 
 		main();
 	}
