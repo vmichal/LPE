@@ -53,12 +53,12 @@ struct Pin {
 			Clear();
 	}
 
-	std::uintptr_t const address;
-	uint16_t const pin;
-	Mode const mode_;
-	Pull const pull_;
-	Speed const speed_;
-	unsigned char const alternate_;
+	std::uintptr_t address;
+	uint16_t pin;
+	Mode mode_;
+	Pull pull_;
+	Speed speed_;
+	unsigned char alternate_;
 };
 
 template <unsigned int bits, typename ShiftReg_t = uint32_t>

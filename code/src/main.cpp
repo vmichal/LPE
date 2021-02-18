@@ -8,9 +8,9 @@
 #include "timer.hpp"
 
 int main() {
-
+	using namespace ufsel;
 	bit::set(std::ref(RCC->APB1ENR), RCC_APB1ENR_TIM14EN);
-	PWM_OUT pwm;
+	PWM_OUT pwm(TIM14);
 
 	for (unsigned i = 0;;++i) {
 		gpio::pins::LED_A.Write(i & 1);

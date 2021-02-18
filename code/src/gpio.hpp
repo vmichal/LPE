@@ -24,9 +24,9 @@ namespace gpio {
 		constexpr auto LED_A = P('A', 3, Pin::Mode::outPP, Pin::Speed::slow, Pin::Pull::none);
 		constexpr auto LED_B = P('A', 4, Pin::Mode::outPP, Pin::Speed::slow, Pin::Pull::none);
 
-		constexpr std::array all_pins{
+		constexpr inline std::array all_pins{
 			PWM_OUT
-		}
+		};
 	}
 
 
