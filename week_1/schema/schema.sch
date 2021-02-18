@@ -1,0 +1,240 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr User 9449 5197
+encoding utf-8
+Sheet 1 1
+Title "Labs of industrial electronics, week 1"
+Date "2021-02-18"
+Rev ""
+Comp "FEE CTU Prague"
+Comment1 "Vojtěch Michal"
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L MCU_ST_STM32F0:STM32F042F4Px U1
+U 1 1 602DBD25
+P 1900 2250
+F 0 "U1" H 1900 1361 50  0000 C CNN
+F 1 "STM32F042F4Px" H 1900 1270 50  0000 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 1400 1550 50  0001 R CNN
+F 3 "http://www.st.com/st-web-ui/static/active/en/resource/technical/document/datasheet/DM00105814.pdf" H 1900 2250 50  0001 C CNN
+	1    1900 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR01
+U 1 1 602DE33C
+P 2950 2950
+F 0 "#PWR01" H 2950 2700 50  0001 C CNN
+F 1 "GND" H 2955 2777 50  0000 C CNN
+F 2 "" H 2950 2950 50  0001 C CNN
+F 3 "" H 2950 2950 50  0001 C CNN
+	1    2950 2950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R1
+U 1 1 602DE907
+P 2950 1950
+F 0 "R1" H 3020 1996 50  0000 L CNN
+F 1 "470" H 3020 1905 50  0000 L CNN
+F 2 "" V 2880 1950 50  0001 C CNN
+F 3 "~" H 2950 1950 50  0001 C CNN
+	1    2950 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D1
+U 1 1 602DEE52
+P 2950 2500
+F 0 "D1" V 2989 2382 50  0000 R CNN
+F 1 "LED" V 2898 2382 50  0000 R CNN
+F 2 "" H 2950 2500 50  0001 C CNN
+F 3 "~" H 2950 2500 50  0001 C CNN
+	1    2950 2500
+	0    -1   -1   0   
+$EndComp
+Text GLabel 2950 1450 1    50   Input ~ 0
+PWM_OUT
+Text GLabel 1150 2750 0    50   Input ~ 0
+PWM_OUT
+Text Label 2500 2250 0    50   ~ 0
+CHANNEL1
+Text Notes 1350 1300 0    129  ~ 0
+Úloha 1.2
+$Comp
+L MCU_ST_STM32F0:STM32F042F4Px U2
+U 1 1 602E4E8A
+P 4450 2250
+F 0 "U2" H 4450 1361 50  0000 C CNN
+F 1 "STM32F042F4Px" H 4450 1270 50  0000 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 3950 1550 50  0001 R CNN
+F 3 "http://www.st.com/st-web-ui/static/active/en/resource/technical/document/datasheet/DM00105814.pdf" H 4450 2250 50  0001 C CNN
+	1    4450 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:LED D2
+U 1 1 602E56CD
+P 5350 1400
+F 0 "D2" V 5389 1282 50  0000 R CNN
+F 1 "LED" V 5298 1282 50  0000 R CNN
+F 2 "" H 5350 1400 50  0001 C CNN
+F 3 "~" H 5350 1400 50  0001 C CNN
+	1    5350 1400
+	0    -1   -1   0   
+$EndComp
+Text Notes 4000 1300 0    129  ~ 0
+Úloha 1.3
+$Comp
+L Device:R R2
+U 1 1 602E5DD8
+P 5350 1800
+F 0 "R2" H 5420 1846 50  0000 L CNN
+F 1 "470" H 5420 1755 50  0000 L CNN
+F 2 "" V 5280 1800 50  0001 C CNN
+F 3 "~" H 5350 1800 50  0001 C CNN
+	1    5350 1800
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR03
+U 1 1 602E7786
+P 5350 3050
+F 0 "#PWR03" H 5350 2800 50  0001 C CNN
+F 1 "GND" H 5355 2877 50  0000 C CNN
+F 2 "" H 5350 3050 50  0001 C CNN
+F 3 "" H 5350 3050 50  0001 C CNN
+	1    5350 3050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3V3 #PWR02
+U 1 1 602E7BD6
+P 5350 1150
+F 0 "#PWR02" H 5350 1000 50  0001 C CNN
+F 1 "+3V3" H 5365 1323 50  0000 C CNN
+F 2 "" H 5350 1150 50  0001 C CNN
+F 3 "" H 5350 1150 50  0001 C CNN
+	1    5350 1150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R3
+U 1 1 602E9895
+P 5350 2250
+F 0 "R3" H 5420 2296 50  0000 L CNN
+F 1 "470" H 5420 2205 50  0000 L CNN
+F 2 "" V 5280 2250 50  0001 C CNN
+F 3 "~" H 5350 2250 50  0001 C CNN
+	1    5350 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R4
+U 1 1 602E9B7C
+P 5350 2750
+F 0 "R4" H 5420 2796 50  0000 L CNN
+F 1 "470" H 5420 2705 50  0000 L CNN
+F 2 "" V 5280 2750 50  0001 C CNN
+F 3 "~" H 5350 2750 50  0001 C CNN
+	1    5350 2750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 2750 1300 2750
+Wire Wire Line
+	2950 2350 2950 2250
+Wire Wire Line
+	2950 1450 2950 1800
+Wire Wire Line
+	2950 2650 2950 2950
+Wire Wire Line
+	2500 2250 2950 2250
+Connection ~ 2950 2250
+Wire Wire Line
+	2950 2250 2950 2100
+Wire Wire Line
+	5350 1950 5350 2050
+Wire Wire Line
+	5350 2400 5350 2500
+Wire Wire Line
+	5050 2050 5350 2050
+Connection ~ 5350 2050
+Wire Wire Line
+	5350 2050 5350 2100
+Wire Wire Line
+	5050 2150 5200 2150
+Wire Wire Line
+	5200 2150 5200 2500
+Wire Wire Line
+	5200 2500 5350 2500
+Connection ~ 5350 2500
+Wire Wire Line
+	5350 2500 5350 2600
+Wire Wire Line
+	5350 1150 5350 1250
+Wire Wire Line
+	5350 1550 5350 1650
+Wire Wire Line
+	5350 3050 5350 2900
+Wire Wire Line
+	8450 2450 8300 2450
+Wire Wire Line
+	8450 2650 8450 2450
+Text Label 7550 2450 0    50   ~ 0
+TIM14_CH1
+Wire Wire Line
+	7500 2450 8000 2450
+$Comp
+L power:GND #PWR04
+U 1 1 602EC0CC
+P 8450 3150
+F 0 "#PWR04" H 8450 2900 50  0001 C CNN
+F 1 "GND" H 8455 2977 50  0000 C CNN
+F 2 "" H 8450 3150 50  0001 C CNN
+F 3 "" H 8450 3150 50  0001 C CNN
+	1    8450 3150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R5
+U 1 1 602EBDB5
+P 8450 2800
+F 0 "R5" H 8380 2754 50  0000 R CNN
+F 1 "470" H 8380 2845 50  0000 R CNN
+F 2 "" V 8380 2800 50  0001 C CNN
+F 3 "~" H 8450 2800 50  0001 C CNN
+	1    8450 2800
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:LED D3
+U 1 1 602EB982
+P 8150 2450
+F 0 "D3" H 8143 2195 50  0000 C CNN
+F 1 "LED" H 8143 2286 50  0000 C CNN
+F 2 "" H 8150 2450 50  0001 C CNN
+F 3 "~" H 8150 2450 50  0001 C CNN
+	1    8150 2450
+	-1   0    0    1   
+$EndComp
+Text Notes 6400 1300 0    129  ~ 0
+Úloha 1.4
+$Comp
+L MCU_ST_STM32F0:STM32F042F4Px U3
+U 1 1 602E9EE3
+P 6900 2250
+F 0 "U3" H 6900 1361 50  0000 C CNN
+F 1 "STM32F042F4Px" H 6900 1270 50  0000 C CNN
+F 2 "Package_SO:TSSOP-20_4.4x6.5mm_P0.65mm" H 6400 1550 50  0001 R CNN
+F 3 "http://www.st.com/st-web-ui/static/active/en/resource/technical/document/datasheet/DM00105814.pdf" H 6900 2250 50  0001 C CNN
+	1    6900 2250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8450 3150 8450 2950
+$EndSCHEMATC
