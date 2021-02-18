@@ -29,8 +29,6 @@ namespace bsp::clock {
 	void Initialize() {
 		using namespace ufsel;
 
-		bit::set(std::ref(RCC->CR), RCC_CR_HSEON); //Enable external oscilator
-
 		SysTick->LOAD = SYSCLK / SYSTICK - 1;
 		SysTick->VAL = 0; //clear the count register and the COUNT flag
 		bit::set(std::ref(SysTick->CTRL),
@@ -39,7 +37,7 @@ namespace bsp::clock {
 			SysTick_CTRL_ENABLE_Msk //enable systick
 		);
 
-		constexpr auto prediv_pllmul = calculate_PREDIV1_PLLMUL(HSE, SYSCLK);
+		constexpr auto prediv_pllmul = calculate_PREDIV1_PLLMUL(HSI, SYSCLK);
 		static_assert(prediv_pllmul.first != 0 && prediv_pllmul.second != 0,
 			"It is impossible to achieve the specified SYSCLK frequency using available PLL and prediv");
 
@@ -62,15 +60,14 @@ namespace bsp::clock {
 
 			//configure the PLL multiplier
 			cfgr[21_to, 18] = prediv_pllmul.second - 2;
-			//clock PLL from predived HSE
-			cfgr[16_to, 15] = 0b10;
+			//clock PLL from predived HSI
+			cfgr[16_to, 15] = 0b01;
 			//configure the ADC clock prescaler
 			cfgr[15_to, 14] = std::countr_zero(ADC_div) - 1;
 			//configure the clock prescaler for advanced peripheral bus 1
 			cfgr[10_to, 8] = 3 + std::countr_zero(PCLK_div);
 		}
 
-		bit::wait_until_set(RCC->CR, RCC_CR_HSERDY); //Wait for HSE to settle
 		bit::set(std::ref(RCC->CR), RCC_CR_PLLON); //Enable PLL
 
 

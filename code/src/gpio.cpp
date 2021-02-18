@@ -33,10 +33,12 @@ namespace gpio {
 	{
 		using namespace ufsel;
 
-		bit::set(std::ref(RCC->APB2ENR), 
+		bit::set(std::ref(RCC->AHBENR), 
 			RCC_AHBENR_GPIOAEN, //enable clock to GPIO{A, B}
 			RCC_AHBENR_GPIOBEN
 			);
+
+		std::ranges::for_each(pins::all_pins, InitializePin);
 	}
 }
 
