@@ -1,7 +1,7 @@
 #include "core.hpp"
 #include <ufsel/bit_operations.hpp>
-#include <library/assert.hpp>
-#include <stm32f10x.h>
+#include "assert.hpp"
+#include <Drivers/stm32f042x6.h>
 #include <bit>
 
 namespace bsp::clock {
@@ -31,12 +31,12 @@ namespace bsp::clock {
 
 		bit::set(std::ref(RCC->CR), RCC_CR_HSEON); //Enable external oscilator
 
-		SysTick->RVR = SYSCLK / SYSTICK - 1;
-		SysTick->CVR = 0; //clear the count register and the COUNT flag
-		bit::set(std::ref(SysTick->CSR),
-			SysTick_CSR_CLKSOURCE, //clock the systick from processor clock
-			SysTick_CSR_TICKINT, //enable the interrupt generation
-			SysTick_CSR_ENABLE //enable systick
+		SysTick->LOAD = SYSCLK / SYSTICK - 1;
+		SysTick->VAL = 0; //clear the count register and the COUNT flag
+		bit::set(std::ref(SysTick->CTRL),
+			SysTick_CTRL_CLKSOURCE_Msk, //clock the systick from processor clock
+			SysTick_CTRL_TICKINT_Msk, //enable the interrupt generation
+			SysTick_CTRL_ENABLE_Msk //enable systick
 		);
 
 		constexpr auto prediv_pllmul = calculate_PREDIV1_PLLMUL(HSE, SYSCLK);

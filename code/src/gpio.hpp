@@ -17,6 +17,8 @@ namespace gpio {
 			return Pin { ports[port - 'A'], uint16_t(1 << pin), mode, speed, pull };
 		}
 
+
+
 	}
 
 

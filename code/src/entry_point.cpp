@@ -125,7 +125,7 @@ extern "C" {
 
 	extern std::uint32_t _edata[], _sdata[], _load_data[];
 	extern std::uint32_t _ebss[], _sbss[];
-
+	extern void __libc_init_array();
 	void Reset_Handler() {
 
 		SystemInit();

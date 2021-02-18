@@ -9,6 +9,7 @@ include("${CMAKE_CURRENT_LIST_DIR}/ufsel/cmake/Itertools.cmake")
 set(SRC
         src/main.cpp
         src/gpio.cpp
+        src/core.cpp
         src/timer.cpp
         src/adc.cpp
         src/flash.cpp
