@@ -19,7 +19,6 @@ int main() {
 
 
 	for (unsigned i = 0;;++i) {
-		bool const decrement = i & 4;
 		switch (i % 4) {
 		case 0:
 			//First make the voltage accross LED zero by sending pin high
@@ -44,7 +43,7 @@ int main() {
 			gpio::pins::LED_LOWER.Clear();
 			break;
 		}
-		BlockingDelay(1000_ms);
+		BlockingDelay(250_ms);
 	}
 }
 
