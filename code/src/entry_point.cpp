@@ -21,13 +21,6 @@ void SystemInit(void)
 	bsp::clock::Initialize();
 }
 
-extern "C" void SysTick_Handler(void)
-{
-	SystemTicks++;
-
-	//TODO call something @ 1kHz
-}
-
 int main();
 
 extern "C" {
@@ -138,13 +131,13 @@ extern "C" {
 		using namespace ufsel;
 
 		//From now on, the reset flags are accessible only whough the cached value (via function 'bsp::reset::why')
-		bsp::reset::loadFlagsAndClearReg();
+		//bsp::reset::loadFlagsAndClearReg();
 
-		MicrosecondTimer::Initialize();
+		//MicrosecondTimer::Initialize();
 
 		gpio::Initialize();
 
-		bsp::adc::Init();
+		//bsp::adc::Init();
 
 		main();
 	}

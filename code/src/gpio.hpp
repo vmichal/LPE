@@ -13,19 +13,19 @@ namespace gpio {
 
 		//AIR1 je plus
 
-		inline constexpr Pin P(char port, unsigned pin, Pin::Mode mode, Pin::Speed speed, Pin::Pull pull) {
+		inline constexpr Pin P(char port, unsigned pin, Pin::Mode mode, Pin::Speed speed, Pin::Pull pull, unsigned char alternate_fun = 0) {
 			std::uintptr_t ports[3] = {GPIOA_BASE,GPIOB_BASE, GPIOC_BASE};
 
-			return Pin { ports[port - 'A'], uint16_t(1 << pin), mode, speed, pull };
+			return Pin { ports[port - 'A'], uint16_t(1 << pin), mode, speed, pull, alternate_fun };
 		}
 
-		constexpr auto PWM_OUT = P('A', 7, Pin::Mode::alternatePP, Pin::Speed::fast, Pin::Pull::none);
+		constexpr inline auto PWM_OUT = P('A', 7, Pin::Mode::alternatePP, Pin::Speed::fast, Pin::Pull::none, 4);
 
-		constexpr auto LED_A = P('A', 3, Pin::Mode::outPP, Pin::Speed::slow, Pin::Pull::none);
-		constexpr auto LED_B = P('A', 4, Pin::Mode::outPP, Pin::Speed::slow, Pin::Pull::none);
+		constexpr inline auto LED_HIGHER = P('A', 3, Pin::Mode::outPP, Pin::Speed::slow, Pin::Pull::none);
+		constexpr inline auto LED_LOWER = P('A', 4, Pin::Mode::outPP, Pin::Speed::slow, Pin::Pull::none);
 
 		constexpr inline std::array all_pins{
-			PWM_OUT
+			PWM_OUT,
 		};
 	}
 

@@ -130,21 +130,22 @@ public:
 
 struct PWM_OUT {
 
-	TIM_TypeDef * const tim_;
+	TIM_TypeDef * tim_;
 
 	PWM_OUT(TIM_TypeDef* const tim) : tim_{tim} {
 		using namespace ufsel;
 		//Let the timer assert the update flag only on counter overflow
 		bit::set(std::ref(tim_->CR1), TIM_CR1_URS);
 		tim_->CNT = 0;
-		tim_->PSC = 480 - 1; //make the timer count @ 100 kHz
-		tim_->ARR = 100;
+		tim_->PSC = 48 - 1; //make the timer count @ 1 MHz
+		tim_->ARR = 1000;
 
 		//Configure the output capture unit
 		bit::modify(std::ref(tim_->CCMR1), bit::bitmask_of_width(3), 0b110, TIM_CCMR1_OC1M_Pos);
-		bit::set(std::ref(tim_->CCMR1), TIM_CCMR1_OC1PE); //Preload capture/compare register
+		//bit::set(std::ref(tim_->CCMR1), TIM_CCMR1_OC1PE); //Preload capture/compare register
 		//CC unit is configured as output by default
 
+		tim_->CCR1 = 0;
 		bit::set(std::ref(tim_->CCER), TIM_CCER_CC1E); //enable capture-compare unit 1
 
 		bit::set(std::ref(tim_->CR1), TIM_CR1_CEN); //Enable counter
