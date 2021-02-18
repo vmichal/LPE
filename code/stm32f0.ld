@@ -7,13 +7,6 @@ ENTRY(Reset_Handler)
 _Min_Heap_Size = 0;      /* required amount of heap. None is required right now*/
 _Min_Stack_Size = 0x800; /* required amount of stack, at least 2 KiB */
 
-
-
-/* These two constants constitute the BL's memory customization point.
-Fill in values from your reference manual. */
-FlashStart = 0x08000000;
-FlashSize = 32K;
-
 /* Specify the memory areas */
 MEMORY
 {

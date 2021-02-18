@@ -3,11 +3,16 @@ project(LPE-SW CXX C ASM)
 
 include("${CMAKE_CURRENT_LIST_DIR}/ufsel/cmake/QueryRepositoryState.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/ufsel/cmake/BitOperations.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/ufsel/cmake/Units.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/ufsel/cmake/Itertools.cmake")
 
 set(SRC
         src/main.cpp
-        Drivers/core_cm0.h
-        Drivers/stm32f042x6.h
+        src/gpio.cpp
+        src/timer.cpp
+        src/adc.cpp
+        src/flash.cpp
+
         )
 
 add_executable(${PROJECT_NAME}.elf ${SRC} ${CAN_SRC})

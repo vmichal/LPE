@@ -20,7 +20,7 @@ set (CMAKE_CXX_STANDARD 20)
 SET(DEVICE_FLAGS "-mcpu=cortex-m0 -mthumb -mfloat-abi=soft")
 SET(OPTIMIZATIONS_FLAGS "-g3 -O${OPTIMIZATION_LEVEL} -finline-functions-called-once -funsigned-char -funsigned-bitfields -ffunction-sections -fdata-sections -fdiagnostics-color=always -fno-stack-protector -finline-small-functions -findirect-inlining -fstack-usage")
 
-SET(DEFINES "-D__weak='__attribute__((weak))' -D__packed='__attribute__((__packed__))'")
+SET(DEFINES "-DUFSEL_USING_UNITS -DUFSEL_USING_UNIT_LITERALS -D__weak='__attribute__((weak))' -D__packed='__attribute__((__packed__))'")
 
 SET(VALIDATION_FLAGS "-Werror=switch -Werror=return-type -Werror=stringop-overflow -Werror=parentheses  -Wall -Wextra -Wundef -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wcast-align -Wvla -Wmissing-format-attribute -Wuninitialized -Winit-self -Wdouble-promotion -Wstrict-aliasing -Wno-unused-local-typedefs -Wno-unused-function -Wno-unused-parameter -fno-unwind-tables")
 
