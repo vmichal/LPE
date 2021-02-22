@@ -25,39 +25,39 @@ int main();
 
 extern "C" {
 
-	__attribute__((weak)) void Reset_Handler();
-	__attribute__((weak)) void NMI_Handler();
-	__attribute__((weak)) void HardFault_Handler();
-	__attribute__((weak)) void SVC_Handler();
-	__attribute__((weak)) void PendSV_Handler();
-	__attribute__((weak)) void SysTick_Handler();
-	__attribute__((weak)) void WWDG_IRQHandler();
-	__attribute__((weak)) void PVD_VDDIO2_IRQHandler();
-	__attribute__((weak)) void RTC_IRQHandler();
-	__attribute__((weak)) void FLASH_IRQHandler();
-	__attribute__((weak)) void RCC_CRS_IRQHandler();
-	__attribute__((weak)) void EXTI0_1_IRQHandler();
-	__attribute__((weak)) void EXTI2_3_IRQHandler();
-	__attribute__((weak)) void EXTI4_15_IRQHandler();
-	__attribute__((weak)) void TSC_IRQHandler();
-	__attribute__((weak)) void DMA1_Channel1_IRQHandler();
-	__attribute__((weak)) void DMA1_Channel2_3_IRQHandler();
-	__attribute__((weak)) void DMA1_Channel4_5_IRQHandler();
-	__attribute__((weak)) void ADC1_IRQHandler();
-	__attribute__((weak)) void TIM1_BRK_UP_TRG_COM_IRQHandler();
-	__attribute__((weak)) void TIM1_CC_IRQHandler();
-	__attribute__((weak)) void TIM2_IRQHandler();
-	__attribute__((weak)) void TIM3_IRQHandler();
-	__attribute__((weak)) void TIM14_IRQHandler();
-	__attribute__((weak)) void TIM16_IRQHandler();
-	__attribute__((weak)) void TIM17_IRQHandler();
-	__attribute__((weak)) void SPI2_IRQHandler();
-	__attribute__((weak)) void SPI1_IRQHandler();
-	__attribute__((weak)) void USART1_IRQHandler();
-	__attribute__((weak)) void USART2_IRQHandler();
-	__attribute__((weak)) void I2C1_IRQHandler();
-	__attribute__((weak)) void CEC_CAN_IRQHandler();
-	__attribute__((weak)) void USB_IRQHandler();
+	void Reset_Handler();
+	void HardFault_Handler();
+	__attribute__((weak, alias("HardFault_Handler"))) void NMI_Handler();
+	__attribute__((weak, alias("HardFault_Handler"))) void SVC_Handler();
+	__attribute__((weak, alias("HardFault_Handler"))) void PendSV_Handler();
+	__attribute__((weak, alias("HardFault_Handler"))) void SysTick_Handler();
+	__attribute__((weak, alias("HardFault_Handler"))) void WWDG_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void PVD_VDDIO2_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void RTC_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void FLASH_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void RCC_CRS_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void EXTI0_1_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void EXTI2_3_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void EXTI4_15_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void TSC_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void DMA1_Channel1_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void DMA1_Channel2_3_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void DMA1_Channel4_5_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void ADC1_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void TIM1_BRK_UP_TRG_COM_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void TIM1_CC_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void TIM2_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void TIM3_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void TIM14_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void TIM16_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void TIM17_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void SPI2_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void SPI1_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void USART1_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void USART2_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void I2C1_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void CEC_CAN_IRQHandler();
+	__attribute__((weak, alias("HardFault_Handler"))) void USB_IRQHandler();
 
 	extern std::uint32_t _estack[];
 
@@ -142,6 +142,10 @@ extern "C" {
 		main();
 	}
 
+	void HardFault_Handler() {
+		//Catches unimplemented interrupt requests, bus errors, usage errors...
+		for (;;);
+	}
 
 }
 
