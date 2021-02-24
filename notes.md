@@ -63,4 +63,47 @@ odhalených pinù MCU a již to vedlo na stabilní komunikaci.
 ## Týden 2 - RC èlánky, charakteristika LED
 Instrukce pro tento týden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283737/mod_resource/content/3/LPE_2_tyden_poznamky2.pdf
 
+  - *Dolní propust* (integraèní èlánek) je realizovatelná pomocí RC i RL, RC je typiètìjší, protože C je typicky "ideálnìjší" než L.
+Feromagnetické jádro induktoru mùže saturovat a nejspíš bude mít hysterezi. Pro velmi vysokou frekvenci zaène mít vliv parazitní
+indukènost pøívodù a samotné ESL kondenzátoru, takže impedance nebude klesat do nekoneèna.
+  - *Horní propust* (derivaèní èlánek) potlaèuje DC a posiluje zmìny - eliminuje DC, detekuje hrany.
+  - *Transient voltage suppressor* (*TVS*) - brání chvilkovým napìovým špièkám, tøeba zenerky.
+  - Rezistory mají teplotní závislost, reálnì napø 50 ppm/K
+  - diody lze použít k jednoduché stabilizaci napìtí, protože mají malou závislost napìtí na tekoucí proudu.
+  Vnitøní odpor v takovém pøípadì bude diferenciální odpor diody samotné. Zapojení dìlièe s diodou "dole" bude mít skoro
+  o øád menší ztrátový výkon než použití normálního odporového dìlièe. Soubìžnì bude malý pokles napìtí pod zátìží.
+  V sofistikovanìjším pøípadì se použije zenerka pro stabilizaci napìtí na dané úrovni. Pøi zatížení zdroje poklesne
+  závìrné napìtí na diodì a tudíž se ještì víc zmenší ztrátový proud zpùsobený Zenerovým prùrazem.
 
+![Možnosti pro realizaci jednoduchého zdroje](week_2/jednoduchy-zdroj.png)
+Možnosti realizace jednoduchého zdroje. Obrázek vykradený z pøiloženého zadání.
+
+
+#### Úkol 2.1
+>  RC èlánek, zapojení, pozorování chování pro rùzné frekvence vstupního signálu
+
+Kanál CH1 mìøí vstupní generovaný signál. Kanál CH2 mìøí výstupní signál. </br>
+Vstupní signál je generován jako sinus s amplitudou 1500 mV a offsetem 1500mV pomocí LEO.
+Díky tomuto nastavení lze rozumnì od oka odeèítat pøenosy pro jednotlivé frekvence.
+
+##### Integraèní èlánek
+Postaven s R = 10k, C = 100n, proto je èasová konstanta tau = 1ms a zlomová frekvence f<sub>k</sub> = 160 Hz.
+  - Frekvence **zlomová** (160Hz)</br>
+    Oèekávám pokles o 3dB, což je asi 70%. Zmìøený pokles je cca 500 mV, což jsou øádovì dvì tøetiny amplitudy.
+    To je o trochu vìtší zatlumení jak 3dB, ale je stále v toleranci kvùli toleranci rezistoru a kondenzátoru.
+  ![Integraèní èlánek, zlomová frekvence](week_2/integracni-zlom.png)
+  - Frekvence **o dekádu nižší** (16Hz)</br>
+    Oèekávám pokles o 0dB, protože kondenzátor by mìl být rozpojením pro DC. Zmìøený úbytek je asi 30mV
+ a to je v porovnání s 1500mV amplitudy skoro nic.
+  ![Integraèní èlánek, zlomová frekvence](week_2/integracni-mensi.png)
+  - Frekvence **o dekádu vyšší** (1600Hz) </br>
+    Oèekávám pokles o 20dB, protože jsme dekádu za zlomovkou. Útlum o 20dB znamená pøenos jen jedné desetiny amplitudy,
+    což perfektnì sedí se zmìøenou amplitudou 150mV.
+  ![Integraèní èlánek, zlomová frekvence](week_2/integracni-vyssi.png)
+
+
+
+
+
+#### Úkol 2.2
+> Zmìøení diferenciálního odporu LED
