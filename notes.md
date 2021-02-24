@@ -5,7 +5,9 @@ a na Embedded serveru https://embedded.fel.cvut.cz/kurzy/lpe/LPE2021.
 
 ## Týden 1 - Zapojení a základní test obvodu
 Instrukce pro tento týden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283733/mod_resource/content/3/LPE_1_tyden_poznamky_2021_v2.pdf,
-hlavní úkol bylo osazení breadboardu souèástkami, oživení lineárního regulátoru a MCU. Základní schéma zapojení MCU a napájení je v pøiloženém PDF.</br>
+hlavní úkol bylo osazení breadboardu souèástkami, oživení lineárního regulátoru a MCU. Základní schéma zapojení MCU a napájení (inpirováno)
+doporuèeným schématem v pøiloženém PDF.</br>
+![Schéma zapojení MCU](week_1/napajeni.png)
 Následuje vlastní schéma zapojení pro zadané samostatné úlohy. Pro zjednodušení vynechávám kompletní zapojení napájení a soustøedím se jenom na signály
 a pøípadnì popis, jaká periferie daný signál zpracovává. Piny jsem volil s ohledem na kompatibilitu jednotlivých úloh, lze tedy zapojit všechny tøi úlohy najednou.
 ![Schéma zapojení úloh 1.2 až 1.4](week_1/schema.png)
@@ -47,8 +49,7 @@ a `push-pull general purpose output` v registrech GPIOx_MODER, GPIOx_PUPDR. V me
 aèkoli by mìl plavat. Fixnulo se to clearnutím pøíslušného bitu v ODR, poté zaèal pin plavat. Jednalo se o PA3 (pin 9), zeptat se na cviku.
 
 #### Úkol 1.4
-> Napište vlastní program v mbedu, který bude plynule rozsvìcet a zhasínat LED (buï pomocí wait a cyklù nebo pwm a
-zmìny støídy)
+> Napište vlastní program v mbedu, který bude plynule rozsvìcet a zhasínat LED (buï pomocí wait a cyklù nebo pwm a zmìny støídy)
 
 Pøíhodný se ukázal timer 14 generující PWM s promìnlivou støídou na pinu PA7. Mikrokontroler bìží z 8MHz HSI násobeného šestkrát interní PLL.
 Prozatím nechme i PCLK na 48MHz. Timer 14 je široký 16 bitù. Pøi použití prescaleru 48 - 1 bude na vstupu timeru frekvence 1 MHz.
