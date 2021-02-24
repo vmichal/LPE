@@ -22,8 +22,8 @@ Bez poznámek
 >Rozblikejte LED pomocí generátoru, dvì úrovnì svitu (prùbìhy napìtí na LED zobrazit na osciloskopu a poznamenat do sešitu...)
 
 Pøejeme si mìøit napìtí na LED, proto je nejsnazší její katodu uzemnit, abychom mohli použít single-ended meøení místo diferenciálního.
-Pøes ochraný R se na anodu pøivede PWM promìnlivé støídy. LED svítí podle stejnosmìrné støední hodnoty (tedy `3V3 * duty_cycle` generované PWM);
-pøi dostateèné frekvenci PWM (u mne asi od 60 Hz) už nejsou vùbec vidìt probliky. </br>
+Pøes ochraný R se na anodu pøivede PWM promìnlivé støídy. LED svítí podle stejnosmìrné støední hodnoty (tedy `3V3 * duty_cycle` generované PWM)
+rozdìlené mezi LED a rezistor. Pøi dostateèné frekvenci PWM (u mne asi od 60 Hz) už nejsou vùbec vidìt probliky. </br>
 Zkoušel jsem hledat projevy parazitní difuzní kapacity PN pøechodu uvnitø LED, ale ani s vyšší vzorkovací frekvencí nebyly hrany PWM výraznì
 deformované; zùstaly strmé a nebyla pozorovatelné exponenciála. </br> Záznam mìøení napìtí na diodì (je vykresleno deset period signálu):
 ![Záznam osciloskopu](week_1/1.2.png)
