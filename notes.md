@@ -3,7 +3,7 @@ Usmoleno **Vojtìchem Michalem** (vojta.michall@email.cz) v prùbìhu letního semes
 Oficiální materiály jsou na Moodle na stránce https://moodle.fel.cvut.cz/course/view.php?id=5814
 a na Embedded serveru https://embedded.fel.cvut.cz/kurzy/lpe/LPE2021.
 
-## Týden 1
+## Týden 1 - Zapojení a základní test obvodu
 Instrukce pro tento týden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283733/mod_resource/content/3/LPE_1_tyden_poznamky_2021_v2.pdf,
 hlavní úkol bylo osazení breadboardu souèástkami, oživení lineárního regulátoru a MCU. Základní schéma zapojení MCU a napájení je v pøiloženém PDF.</br>
 Následuje vlastní schéma zapojení pro zadané samostatné úlohy. Pro zjednodušení vynechávám kompletní zapojení napájení a soustøedím se jenom na signály
@@ -58,4 +58,8 @@ center-aligned mód timeru. Jas LED tedy plynule nabíhá od nuly do 100% a následn
 
 **TODO** Zeptat se, proè mohly plovoucí piny 17,18 (D+, D-) zpùsobit nestabilní koumikaci STlinku s mikrokontrolerem. Staèilo se prstem dotknout
 odhalených pinù MCU a již to vedlo na stabilní komunikaci.
+
+## Týden 2 - RC èlánky, charakteristika LED
+Instrukce pro tento týden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283737/mod_resource/content/3/LPE_2_tyden_poznamky2.pdf
+
 
