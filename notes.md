@@ -86,7 +86,13 @@ Kanál CH1 mìøí vstupní generovanı signál. Kanál CH2 mìøí vıstupní signál. </br>
 Vstupní signál je generován jako sinus s amplitudou 1500 mV a offsetem 1500mV pomocí LEO.
 Díky tomuto nastavení lze rozumnì od oka odeèítat pøenosy pro jednotlivé frekvence.
 
+Zapojení je inspirované zadáním, dùleitá je úprava derivaèního èlánku, nebo ten by obecnì na vıstupu generoval záporné napìtí,
+které by nebylo zdravé pro clampovací diody na pinu MCU.
+ ![Integraèní èlánek, zlomová frekvence](week_2/RC-clanky.png)
+
 ##### Integraèní èlánek
+
+TODO zkontrolovat vıpoèet zlomové frekvence
 Postaven s R = 10k, C = 100n, proto je èasová konstanta tau = 1ms a zlomová frekvence f<sub>k</sub> = 160 Hz.
   - Frekvence **zlomová** (160Hz)</br>
     Oèekávám pokles o 3dB, co je asi 70%. Zmìøenı pokles je cca 500 mV, co jsou øádovì dvì tøetiny amplitudy.
@@ -101,6 +107,31 @@ Postaven s R = 10k, C = 100n, proto je èasová konstanta tau = 1ms a zlomová frek
     co perfektnì sedí se zmìøenou amplitudou 150mV.
   ![Integraèní èlánek, zlomová frekvence](week_2/integracni-vyssi.png)
 
+##### Derivaèní èlánek
+Postaven s rezistory RR<sub>2,3,4</sub> = 10k, C = 100n, jedná se o trošku sofistikovanìjší zapojení, kde rezistory R<sub>3</sub>, RR<sub>4</sub>
+zajišují stejnosmìrnı pracovní bod uprostøed rozsahu napájení. </br>
+Odvození pøenosu: Uváíme superpozici, stejnosmìrnı zdroj korektnì nahradíme. Tím se R<sub>3</sub>, RR<sub>4</sub> staly paralelními.
+Pro snazší odvození oznaème R = R<sub>3</sub>||R<sub>4</sub> = 5k a pomocí nìj vyjádøíme všechny odpory v pøenosu.
+![Odvození tau](week_2/rovnice.gif)
+![Odvození tau](week_2/frekvence.gif)
+Po numerickém dosazení vyjde, e pøenos derivaèní sloky dosáhne jednièky pro f<sub>0</sub> = 318 Hz,
+ale díky integraèní sloce se na zlomové frekvenci f<sub>1</sub> = 106 Hz pøenos zalomí a jde dál vodorovnì.
+Pro nekoneènou frekvenci je pøenos jedna tøetina, statické zesílení 0 (DC kompletnì utlumeno).
+**Závìr**: èasová konstanta bude 1/f<sub>1</sub>
+
+
+  - Frekvence **zlomová** (160Hz)</br>
+    Oèekávám pokles o 3dB, co je asi 70%. Zmìøenı pokles je cca 500 mV, co jsou øádovì dvì tøetiny amplitudy.
+    To je o trochu vìtší zatlumení jak 3dB, ale je stále v toleranci kvùli toleranci rezistoru a kondenzátoru.
+  ![Integraèní èlánek, zlomová frekvence](week_2/integracni-zlom.png)
+  - Frekvence **o dekádu niší** (16Hz)</br>
+    Oèekávám pokles o 0dB, protoe kondenzátor by mìl bıt rozpojením pro DC. Zmìøenı úbytek je asi 30mV
+ a to je v porovnání s 1500mV amplitudy skoro nic.
+  ![Integraèní èlánek, zlomová frekvence](week_2/integracni-mensi.png)
+  - Frekvence **o dekádu vyšší** (1600Hz) </br>
+    Oèekávám pokles o 20dB, protoe jsme dekádu za zlomovkou. Útlum o 20dB znamená pøenos jen jedné desetiny amplitudy,
+    co perfektnì sedí se zmìøenou amplitudou 150mV.
+  ![Integraèní èlánek, zlomová frekvence](week_2/integracni-vyssi.png)
 
 
 
