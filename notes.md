@@ -3,6 +3,9 @@ Usmoleno **Vojtìchem Michalem** (vojta.michall@email.cz) v prùbìhu letního semes
 Oficiální materiály jsou na Moodle na stránce https://moodle.fel.cvut.cz/course/view.php?id=5814
 a na Embedded serveru https://embedded.fel.cvut.cz/kurzy/lpe/LPE2021.
 
+Týdny jsou èíslovány chronologicky, poznámky k nim jsou uvedeny v obráceném poøadí.
+Jako první je tedy uveden poslední týden, scrollováním na konec stránky se èlovìk dostane na týden první.
+
 ## Týden 2 - RC èlánky, charakteristika LED
 Instrukce pro tento týden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283737/mod_resource/content/3/LPE_2_tyden_poznamky2.pdf
 
