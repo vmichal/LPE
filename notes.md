@@ -63,40 +63,45 @@ odhalenıch pinù MCU a ji to vedlo na stabilní komunikaci.
 ## Tıden 2 - RC èlánky, charakteristika LED
 Instrukce pro tento tıden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283737/mod_resource/content/3/LPE_2_tyden_poznamky2.pdf
 
-  - *Dolní propust* (integraèní èlánek) je realizovatelná pomocí RC i RL, RC je typiètìjší, protoe C je typicky "ideálnìjší" ne L.
-Feromagnetické jádro induktoru mùe saturovat a nejspíš bude mít hysterezi. Pro velmi vysokou frekvenci zaène mít vliv parazitní
+  - *Dolní propust* (integraèní èlánek) je realizovatelná pomocí RC i RL. RC je typiètìjší, protoe C je typicky "ideálnìjší" ne L.
+Feromagnetické jádro induktoru mùe saturovat a nejspíš bude mít hysterezi. RC taky není ideální:
+pro velmi vysokou frekvenci zaène mít vliv parazitní
 indukènost pøívodù a samotné ESL kondenzátoru, take impedance nebude klesat do nekoneèna.
-  - *Horní propust* (derivaèní èlánek) potlaèuje DC a posiluje zmìny - eliminuje DC, detekuje hrany.
+  - *Horní propust* (derivaèní èlánek) potlaèuje DC a posiluje zmìny. Pouití pro detekci hran (strmou hranu
+   derivace extrémnì zesílí) a nebo oddìlení èástí obvodu na rùznıch stejnosmìrnıch potenciálech (komunikace
+BMS na jednotlivıch segmentech akumulátoru).
   - *Transient voltage suppressor* (*TVS*) - brání chvilkovım napìovım špièkám, tøeba zenerky.
   - Rezistory mají teplotní závislost, reálnì napø 50 ppm/K
-  - diody lze pouít k jednoduché stabilizaci napìtí, protoe mají malou závislost napìtí na tekoucí proudu.
+  - Diody lze pouít k jednoduché stabilizaci napìtí, protoe mají malou závislost napìtí na tekoucí proudu.
   Vnitøní odpor v takovém pøípadì bude diferenciální odpor diody samotné. Zapojení dìlièe s diodou "dole" bude mít skoro
   o øád menší ztrátovı vıkon ne pouití normálního odporového dìlièe. Soubìnì bude malı pokles napìtí pod zátìí.
   V sofistikovanìjším pøípadì se pouije zenerka pro stabilizaci napìtí na dané úrovni. Pøi zatíení zdroje poklesne
   závìrné napìtí na diodì a tudí se ještì víc zmenší ztrátovı proud zpùsobenı Zenerovım prùrazem.
+Ztrátovı vıkon klesá s rostoucí zátìí na zdroji.
 
+Monosti realizace jednoduchého zdroje. Obrázek vykradenı z pøiloeného zadání. </br>
+(a) = odporovı dìliè (b) = dìliè s LED dole (c) = dìliè se zenerkou dole
 ![Monosti pro realizaci jednoduchého zdroje](week_2/jednoduchy-zdroj.png)
-Monosti realizace jednoduchého zdroje. Obrázek vykradenı z pøiloeného zadání.
 
 
 #### Úkol 2.1
 >  RC èlánek, zapojení, pozorování chování pro rùzné frekvence vstupního signálu
 
-Kanál CH1 mìøí vstupní generovanı signál. Kanál CH2 mìøí vıstupní signál. </br>
+Zapojení osciloskopu: Kanál CH1 mìøí vstupní generovanı signál. Kanál CH2 mìøí vıstupní signál. </br>
 Vstupní signál je generován jako sinus s amplitudou 1500 mV a offsetem 1500mV pomocí LEO.
 Díky tomuto nastavení lze rozumnì od oka odeèítat pøenosy pro jednotlivé frekvence.
 
 Zapojení je inspirované zadáním, dùleitá je úprava derivaèního èlánku, nebo ten by obecnì na vıstupu generoval záporné napìtí,
-které by nebylo zdravé pro clampovací diody na pinu MCU.
+které by nebylo zdravé pro clampovací diody na pinu MCU. Rezistory R3 a R4 nastavují stejnosmìrnı pracovní bod,
+vıstup tak osciluje kolem støedu napìového rozsahu <0, 3V3>.
  ![Integraèní èlánek, zlomová frekvence](week_2/RC-clanky.png)
 
 ##### Integraèní èlánek
 
-TODO zkontrolovat vıpoèet zlomové frekvence
 Postaven s R = 10k, C = 100n, proto je èasová konstanta tau = 1ms a zlomová frekvence f<sub>k</sub> = 160 Hz.
   - Frekvence **zlomová** (160Hz)</br>
-    Oèekávám pokles o 3dB, co je asi 70%. Zmìøenı pokles je cca 500 mV, co jsou øádovì dvì tøetiny amplitudy.
-    To je o trochu vìtší zatlumení jak 3dB, ale je stále v toleranci kvùli toleranci rezistoru a kondenzátoru.
+    Oèekávám pokles o 3dB, take asi 70% amplitudy. Zmìøenı pokles je cca 500 mV, co jsou øádovì dvì tøetiny amplitudy.
+    To je o trochu vìtší zatlumení jak 3dB, ale je stále øádovì sedí s tolerancí rezistoru a kondenzátoru.
   ![Integraèní èlánek, zlomová frekvence](week_2/integracni-zlom.png)
   - Frekvence **o dekádu niší** (16Hz)</br>
     Oèekávám pokles o 0dB, protoe kondenzátor by mìl bıt rozpojením pro DC. Zmìøenı úbytek je asi 30mV
@@ -108,32 +113,50 @@ Postaven s R = 10k, C = 100n, proto je èasová konstanta tau = 1ms a zlomová frek
   ![Integraèní èlánek, zlomová frekvence](week_2/integracni-vyssi.png)
 
 ##### Derivaèní èlánek
-Postaven s rezistory RR<sub>2,3,4</sub> = 10k, C = 100n, jedná se o trošku sofistikovanìjší zapojení, kde rezistory R<sub>3</sub>, RR<sub>4</sub>
+Postaven s rezistory R<sub>2,3,4</sub> = 10k, C = 100n, jedná se o trošku sofistikovanìjší zapojení, kde rezistory R<sub>3</sub>, R<sub>4</sub>
 zajišují stejnosmìrnı pracovní bod uprostøed rozsahu napájení. </br>
-Odvození pøenosu: Uváíme superpozici, stejnosmìrnı zdroj korektnì nahradíme. Tím se R<sub>3</sub>, RR<sub>4</sub> staly paralelními.
+Odvození pøenosu: Uváíme superpozici, stejnosmìrnı zdroj korektnì nahradíme zdrojem 0V (zkrat). Tím se R<sub>3</sub>, RR<sub>4</sub> staly paralelními.
 Pro snazší odvození oznaème R = R<sub>3</sub>||R<sub>4</sub> = 5k a pomocí nìj vyjádøíme všechny odpory v pøenosu.
+Vznikl impedanèní dìliè. Mìøí se na R = R<sub>3</sub>||R<sub>4</sub>, "nahoøe" jsou v sérii kondenzátor a odpor R<sub>2</sub> = 2R.
+
 ![Odvození tau](week_2/rovnice.gif)
 ![Odvození tau](week_2/frekvence.gif)
+
 Po numerickém dosazení vyjde, e pøenos derivaèní sloky dosáhne jednièky pro f<sub>0</sub> = 318 Hz,
 ale díky integraèní sloce se na zlomové frekvenci f<sub>1</sub> = 106 Hz pøenos zalomí a jde dál vodorovnì.
-Pro nekoneènou frekvenci je pøenos jedna tøetina, statické zesílení 0 (DC kompletnì utlumeno).
-**Závìr**: èasová konstanta bude 1/f<sub>1</sub>
+Pro nekoneènou frekvenci je pøenos jedna tøetina, statické zesílení 0 (DC kompletnì utlumeno). </br>
+**Závìr**: Èasová konstanta bude ta menší z obou èasovıch konstant systému. Oèekávám tau = 1/(2\*pi\*f<sub>1</sub>) = 1.5 ms.
 
+**Experimentální odeètení**: Pøiveïme na vstup obdélníkovı signál. Ten bude pro náš systém pøedstavovat jednotkové skoky.
+Pøedpokládejme, e zvolená frekvence - v mém pøípadì 10 Hz - je dostateènì nízká, aby se èlánek zvládal ustálit.
+Amplituda skokové odezvy je tìsnì pøes jeden volt, jak je vidìt na obrázku:
+  ![Derivaèní èlánek, amplituda odezvy na skok](week_2/derivacni-amplituda.png)
+Po uplynutí jedné èasvé konstanty by mìla bıt odezva na 36% amplitudy. Pomocí kurzorù mùeme z osciloskopu odeèíst, e èasová konstanta
+je pøiblinì 1.5 ms, viz následující obrázek.
+  ![Derivaèní èlánek, tau](week_2/derivacni-tau.png)
+Tento vısledek potvrzuje pøedchozí vıpoèet.
+Byl ale experiment korektní? Pro odeètení amplitudy odezvy je nezbytné mít na poèátku systém ustálenı. Já pøedpokládal, e
+frekvence 10 Hz je dostateèná pro ustálení odezvy. Kadou pùlperiodu vstupního signálu zapoène novı pøechodovı dìj dlouhı 50 ms.
+Jestli jsme zmìøili èasovou konstantu 1.5ms, poté má systém mezi dvìma po sobì následujícími jednotkovımi skoky víc ne 33 èasovıch konstant.
+Ji 4.6 tau znamená chybu menší ne jedno procento, pøi 33 tau je relativní chyba cca 4e-15. Experiment je tedy proveden korektnì, chyby zpùsobené
+zanedbáváním a odhady jsou nesrovnatelnì vìtší ne chyby metodické.
 
-  - Frekvence **zlomová** (160Hz)</br>
-    Oèekávám pokles o 3dB, co je asi 70%. Zmìøenı pokles je cca 500 mV, co jsou øádovì dvì tøetiny amplitudy.
-    To je o trochu vìtší zatlumení jak 3dB, ale je stále v toleranci kvùli toleranci rezistoru a kondenzátoru.
-  ![Integraèní èlánek, zlomová frekvence](week_2/integracni-zlom.png)
-  - Frekvence **o dekádu niší** (16Hz)</br>
-    Oèekávám pokles o 0dB, protoe kondenzátor by mìl bıt rozpojením pro DC. Zmìøenı úbytek je asi 30mV
- a to je v porovnání s 1500mV amplitudy skoro nic.
-  ![Integraèní èlánek, zlomová frekvence](week_2/integracni-mensi.png)
-  - Frekvence **o dekádu vyšší** (1600Hz) </br>
-    Oèekávám pokles o 20dB, protoe jsme dekádu za zlomovkou. Útlum o 20dB znamená pøenos jen jedné desetiny amplitudy,
-    co perfektnì sedí se zmìøenou amplitudou 150mV.
-  ![Integraèní èlánek, zlomová frekvence](week_2/integracni-vyssi.png)
-
-
+Pro **ovìøení** vıše vypoètenıch frekvenèních vlastností zkusíme odezvu derivaèního èlánku na harmonickı vstup.
+Drme v pamìti, e amplitudová frekvenèní charakteristika má maximum pro nekoneènou frekvenci na zesílení 1/3, viz odvození pøenosu vıše.
+Na vstupu èlánku je sinusovı signál s amplitudou 1500 mV, offsetem 1650 mV (støed rozsahu napájení) a promìnlivou frekvencí.
+  - Frekvence skoro **nekoneèná** (50 kHz) </br>
+    Oèekávám zeslabení signálu na jednu tøetinu a ménì. Zmìøená amplituda 449 mV øádovì sedí; H(s) = 1/3 toti platí a pro nekoneènou frekvenci a
+další nezanedbatenou chybu vnáší nepøesné odeèítání hodnot. Na obrázku je 100 vzorkù z osciloskopu pracujícího na frekvenci 1MSps
+kadı dílek na ose èasové tak odpovodá jedné mikrosekundì.
+  ![Derivaèní èlánek, nekoneèná frekvence](week_2/derivacni-vyssi.png)
+  - Frekvence **zlomová** (108Hz)</br>
+    Amplituda je tøikrát zeslabena (|H(s)| pro s -> nekoneèno) na cca 500mV, nad to ale bude amplituda zeslabena ještì o další 3dB na 0.7*500 = 350 mV.
+Zmìøené napìtí sedí velmi pøesnì.
+  ![Derivaèní èlánek, zlomová frekvence](week_2/derivacni-zlom.png)
+  - Frekvence **o dekádu niší** (10Hz)</br>
+  Signál je tak zatlumen, e bylo potøeba jej digitálnì zesílit na pìtinásobek, èasové prùbìhy osciloskopu tedy nejsou to scale.
+Podle analızy bychom mìli mìøit 500mV zeslabenıch o 20dB (jsme dekádu od zlomovky), zmìøenıch 50 mV jsem tedy oèekával.
+  ![Derivaèní èlánek, niší frekvence](week_2/derivacni-nizsi.png)
 
 
 #### Úkol 2.2
