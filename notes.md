@@ -79,9 +79,11 @@ BMS na jednotlivıch segmentech akumulátoru).
   závìrné napìtí na diodì a tudí se ještì víc zmenší ztrátovı proud zpùsobenı Zenerovım prùrazem.
 Ztrátovı vıkon klesá s rostoucí zátìí na zdroji.
 
-Monosti realizace jednoduchého zdroje. Obrázek vykradenı z pøiloeného zadání. </br>
-(a) = odporovı dìliè (b) = dìliè s LED dole (c) = dìliè se zenerkou dole
+**Monosti realizace jednoduchého zdroje** (obrázek vykradenı z pøiloeného zadání): </br>
+
 ![Monosti pro realizaci jednoduchého zdroje](week_2/jednoduchy-zdroj.png)
+
+(a) = odporovı dìliè (b) = dìliè s LED dole (c) = dìliè se zenerkou dole
 
 
 #### Úkol 2.1
@@ -115,11 +117,13 @@ Postaven s R = 10k, C = 100n, proto je èasová konstanta tau = 1ms a zlomová frek
 ##### Derivaèní èlánek
 Postaven s rezistory R<sub>2,3,4</sub> = 10k, C = 100n, jedná se o trošku sofistikovanìjší zapojení, kde rezistory R<sub>3</sub>, R<sub>4</sub>
 zajišují stejnosmìrnı pracovní bod uprostøed rozsahu napájení. </br>
-Odvození pøenosu: Uváíme superpozici, stejnosmìrnı zdroj korektnì nahradíme zdrojem 0V (zkrat). Tím se R<sub>3</sub>, RR<sub>4</sub> staly paralelními.
+
+**Analıza:** Uváíme superpozici, stejnosmìrnı zdroj korektnì nahradíme zdrojem 0V (zkrat). Tím se R<sub>3</sub>, RR<sub>4</sub> staly paralelními.
 Pro snazší odvození oznaème R = R<sub>3</sub>||R<sub>4</sub> = 5k a pomocí nìj vyjádøíme všechny odpory v pøenosu.
 Vznikl impedanèní dìliè. Mìøí se na R = R<sub>3</sub>||R<sub>4</sub>, "nahoøe" jsou v sérii kondenzátor a odpor R<sub>2</sub> = 2R.
 
 ![Odvození tau](week_2/rovnice.gif)
+
 ![Odvození tau](week_2/frekvence.gif)
 
 Po numerickém dosazení vyjde, e pøenos derivaèní sloky dosáhne jednièky pro f<sub>0</sub> = 318 Hz,
@@ -141,7 +145,8 @@ Jestli jsme zmìøili èasovou konstantu 1.5ms, poté má systém mezi dvìma po sobì n
 Ji 4.6 tau znamená chybu menší ne jedno procento, pøi 33 tau je relativní chyba cca 4e-15. Experiment je tedy proveden korektnì, chyby zpùsobené
 zanedbáváním a odhady jsou nesrovnatelnì vìtší ne chyby metodické.
 
-Pro **ovìøení** vıše vypoètenıch frekvenèních vlastností zkusíme odezvu derivaèního èlánku na harmonickı vstup.
+**Ovìøení:**
+Pro kontrolu vıše vypoètenıch frekvenèních vlastností zkusím odezvu derivaèního èlánku na harmonickı vstup.
 Drme v pamìti, e amplitudová frekvenèní charakteristika má maximum pro nekoneènou frekvenci na zesílení 1/3, viz odvození pøenosu vıše.
 Na vstupu èlánku je sinusovı signál s amplitudou 1500 mV, offsetem 1650 mV (støed rozsahu napájení) a promìnlivou frekvencí.
   - Frekvence skoro **nekoneèná** (50 kHz) </br>
@@ -161,3 +166,53 @@ Podle analızy bychom mìli mìøit 500mV zeslabenıch o 20dB (jsme dekádu od zlomovk
 
 #### Úkol 2.2
 > Zmìøení diferenciálního odporu LED
+
+Na následujícím obrázku (zapùjèeném ze zadání pøiloeného vıše) je vidìt schéma zapojení a oèekávanı prùbìh
+voltampérové charakteristiky na LED. Podle Shockleyovy rovnice ideální diody má závislost proudu na napìtí
+v propustném smìru exponenciální charakter. Exponeniciálu zkusíme lokálnì linearizovat pomocí diferenciálních odporù
+R<sub>diff1</sub> na okolí proudu 3 mA a R<sub>diff2</sub> na okolí proudu 20 mA.
+  ![Diferenciální odpor, zadání](week_2/dif-odpor-zadani.png)
+
+**Analıza:**
+Pro exponenciální závislost proudu na napìtí platí d/du exp(c\*u) = c*exp(c\*u) a analogicky pro derivace vyšších øádù.
+Protoe konstantní koeficient exponenciály v rovnici diody je jistì kladnı, budou vdy voltampérová charakteristika i všechny její derivace
+ryze rostoucí funkcí. Podle infinitezimální definice vodivosti a odporu:
+
+  ![Derivaèní èlánek, nekoneèná frekvence](week_2/dif-odpor.gif)
+
+a vıše zmínìné podmínky `c > 0` plyne, e diferenciální odpor bude klesat, nebo je pøevrácenou hodnotou diferenciální
+vodivosti g<sub>diff</sub> a ta jistì roste.
+
+**Ovìøení:**
+Dopøedné mìøení na LED je mìøeno pøímo kanálem `VLED`. Kanál `VR` mìøí napìtí na seriové kombinaci LED a 47ohm odporu.
+Odeètením `VR - VLED` získáme diferenciální mìøení napìtí na odporu, kterı je pøímo úmìrnı tekoucímu proudu.
+sloupec I se dopoète vztahem `I = (VR-VLED)/47`. Mìøení probìhlo dvakrát s dvìma rùznımi rezistory velikosti 47 ohm.
+
+
+První sada mìøení:
+
+| VR [mV] | VLED [mV] | I [mA] | R<sub>diff</sub> [ohm] |
+|--- | ---| --- | --- | 
+| 1810 | 1675 | 2.87 | 17.74 |
+| 1850| 1686| 3.49 |    |
+| 2862 | 1897 | 20.5 | 6.09  |
+| 2983 | 1911| 22.8 |   |
+
+Druhá sada mìøení:
+
+| VR [mV] | VLED [mV] | I [mA] | R<sub>diff</sub> [ohm] |
+|--- | ---| --- | --- |
+| 1820 | 1670 | 3.19 |   52.38   |
+| 1799 | 1659 | 2.98 |      |
+| 2806 | 1831 | 20.75 |  8.35   |
+| 3045 | 1867 | 25.06 |     |
+
+**Závìr**: Diferenciální odpor LED jsou jednotky, nejvıše desítky ohmù. Mìøení je zøejmì silnì zatíeno nepøesností
+rezistorù - snaíme-li se mìøit nízkı diferenciální odpor LED, hraje ohm sem èi tam u ochranného rezistoru velkou roli.
+Kadopádnì se potvrdila hypotéza, e diferenciální odpor musí s rostoucím proudem klesat.
+Fyzikálnì je to moné vysvìtlit vìtší saturací PN pøechodu uvnitø diody. Tím klesá odpor v *depletion layer* a
+voltampérová charakteristika srtmì stoupá. Strmì tím stoupá i ztrátovı vıkon, ten byl v pøípadì maximálního mìøeného proudu
+roven `25mA * 1.87V = 46.7 mW`.
+
+TODO: Zeptat se na pomìr vıkonu vysvíceného a vytopeného LEDkou.
+
