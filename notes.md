@@ -47,6 +47,11 @@ vıstup tak osciluje kolem støedu napìového rozsahu <0, 3V3>.
 ##### Integraèní èlánek
 
 Postaven s R = 10k, C = 100n, proto je èasová konstanta tau = 1ms a zlomová frekvence f<sub>k</sub> = 160 Hz.
+Odeèítání èasové konstanty není v tomto pøípadì pøíliš zajímavé pro svou pøímoèarost.
+Experimentálnì je provedeno a u druhé konfigurace - derivaèního èlánku.
+
+Frekvnenèí závislost odezvy na harmonickı signál:
+
   - Frekvence **zlomová** (160Hz)</br>
     Oèekávám pokles o 3dB, take asi 70% amplitudy. Zmìøenı pokles je cca 500 mV, co jsou øádovì dvì tøetiny amplitudy.
     To je o trochu vìtší zatlumení jak 3dB, ale je stále øádovì sedí s tolerancí rezistoru a kondenzátoru.
