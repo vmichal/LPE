@@ -6,6 +6,61 @@ a na Embedded serveru https://embedded.fel.cvut.cz/kurzy/lpe/LPE2021.
 Tıdny jsou èíslovány chronologicky, poznámky k nim jsou uvedeny v obráceném poøadí.
 Jako první je tedy uveden poslední tıden, scrollováním na konec stránky se èlovìk dostane na tıden první.
 
+## Tıden 3 - Elementární tranzistorové zapojení
+Insturkce pro tento tıden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283739/mod_resource/content/4/LPE_3_tyden_poznamky_2021_v4.pdf
+
+#### Úkol 3.1
+> Zmìøit proudovı zesilovací èinitel NPN tranzistoru h<sub>21E</sub>
+
+Základní zapojení se spoleènım emitorem.
+Na bázi je zapojen 1 mega ohm proti 3V3, úbytek na nìm zmìøen jako 2.660 V (na PN pøechod BE zbıvá 636 mV).
+V kolektoru je èervená LED a rezistor 470R s serii proti 3V3, na R úbytek 528 mV.
+
+Z toho plyne proud bází `I<sub>b</sub> = 2'660/1'000'000 = 2.6 uA` a proud kolektorem `I<sub>c</sub> = 528/470 = 1.12 mA`
+a zesilovací èinitel `h<sub>21E</sub> = I<sub>b</sub> / I<sub>c</sub> = 432`, co je oèekávatelná hodnota u signálového BJT.
+Podle datasheetu jsou zesílení BJT s pøíponou "C" v rozsahu 400-800, take danı tranzistor je v garantovaném rozsahu.
+
+S tímto zesílením lze nahradit 1M v bázi i odporem kùe - ten je ale v øádu desítek kOhm a více pouze pro nízká napìtí.
+Se síovım napìtím (230 V RMS) se kùe prorazí a odpor **vıraznì poklesne**.
+
+#### Úkol 3.2
+> Rozsvítit LED pomocí NPN tranzistoru (zmìøit UBE, UCE, orientaèní vıpoèet Rb, Rc)
+
+NPN bude pouit jako spínaè  pro seriové zapojení èervené LED a rezistoru proti 5V,
+take v saturaci budu pøedpokládat nulovı úbytek napìtí mezi kolektorem a emitorem.
+Pøi pouití rezistoru 470 ohm v sérii s LED s dopøednım napìtím cca 1.8V by mìl v plnì sepnutém stavu LEDkou téci proud 
+`Ic = (5-1.8)/470 = 6.8mV`. Pøi proudovém zesilovacím èiniteli h<sub>21e</sub> = 432 je potøeba dodat do báze
+proud alespoò `Ib = Ic/h21e = 15 uA`. Budu-li pøedpokládat, e napìovı úbytek pøechodu
+BE se nebude pøíliš mìnit od úlohy 3.1, a zùstane tedy cca 650mV, poté do báze potøebuji rezistor nejvıše
+`Rb_max = (3V3 - 0.65)/15uA = 176 kOhm`. Pouití napøíklad 22kOhm nám dá "šestinásobnou jistotu",
+e spínání bude fungovat bez ohledu na neideality souèástek a pøípadné šumy.
+
+Zmìøené saturaèní napìtí U<sub>ce</sub> tranzistoru v daném zapojení je 57mV, co ve srovnání s úbytkem 5V na celé vìtvi vèetnì
+LED a rezistoru je skuteènì zanedbatelné. Zmìøenı úbytek na pøechodu báze-emitor je 680 mV, take odpovídá oèekávanému úbytku.
+
+Protoe NPN tranzistor v sepnutém stavu pøizemòuje svùj kolektor, lze z nìj sestrojit nejhloupìjší invertor. Vysoká úroveò 
+na bázi zpùsobí nízkou úroveò na kolektoru a naopak. Viz následující obrázek. Kanál 1 je U<sub>be</sub>, kanál 2 je U<sub>ce</sub>.
+Zajímavé je prohnutí U<sub>ce</sub> v oblasti, kde má signál na bázi maximum. Saturace BJT neprobìhne najednou,
+není saturaèní napìtí není konstantní - záleí na míøe saturace.
+
+![Negace signálu pomocí NPN tranzistoru](week_3/invertor.png)
+#### Úkol 3.3
+> Rozsvítit LED pomocí PNP tranzistoru (zmìøit UBE, UCE)
+
+Princip zapojení úplnì identickı jako u NPN, jen "zrcadlovì obráceno". PNP je pøipojen emitorem na napájení,
+na bázi je pøes 10k pøipojen generátor, dalších 10k je zapojeno mezi bázi a emitor jako pullup pro rychlejší zavírání.
+V kolektoru je v sérii èervená LED a 470R do zemì.
+
+Zajímavé jsou dva èasové prùbìhy se zapojení s PNP tranzistorem se sinusem a obdélníkem na vstupu.
+
+Sinusovı vstup: kanál 1 je báze, kanál 2 je kolektor, kanál 3 je napìtí na rezistoru v kolektoru. Je vidìt, e
+obvod opìt má invertující charakter, zajímavı je nábìh napìtí na rezistoru (nábìná hrana kanálu 3), kde 
+se projevuje exponenciální závislost proudu bází na napìtí, je se lineární závislostí pøevádí na exp závislost proudu kolektorem
+na napìtí U<sub>eb</sub>
+
+![Prùbìh napìtí na PNP spínaèi](week_3/pnp_prubeh.png)
+![Prùbìh napìtí na PNP spínaèi](week_3/pnp_obdelnik.png)
+
 ## Tıden 2 - RC èlánky, charakteristika LED
 Instrukce pro tento tıden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283737/mod_resource/content/3/LPE_2_tyden_poznamky2.pdf
 
