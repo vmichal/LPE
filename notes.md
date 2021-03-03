@@ -6,11 +6,13 @@ a na Embedded serveru https://embedded.fel.cvut.cz/kurzy/lpe/LPE2021.
 Týdny jsou èíslovány chronologicky, poznámky k nim jsou uvedeny v obráceném poøadí.
 Jako první je tedy uveden poslední týden, scrollováním na konec stránky se èlovìk dostane na týden první.
 
-## Týden 3 - Elementární tranzistorové zapojení
-Insturkce pro tento týden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283739/mod_resource/content/4/LPE_3_tyden_poznamky_2021_v4.pdf
+## Týden 3 - Tranzistory
+Instrukce pro tento týden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283739/mod_resource/content/4/LPE_3_tyden_poznamky_2021_v4.pdf
 
 #### Úkol 3.1
 > Zmìøit proudový zesilovací èinitel NPN tranzistoru h<sub>21E</sub>
+
+<img align="right" src="week_3/common-emitor.png">
 
 Základní zapojení se spoleèným emitorem.
 Na bázi je zapojen 1 mega ohm proti 3V3, úbytek na nìm zmìøen jako 2.660 V (na PN pøechod BE zbývá 636 mV).
@@ -21,12 +23,12 @@ a zesilovací èinitel `h<sub>21E</sub> = I<sub>b</sub> / I<sub>c</sub> = 432`, co
 Podle datasheetu jsou zesílení BJT s pøíponou "C" v rozsahu 400-800, takže daný tranzistor je v garantovaném rozsahu.
 
 S tímto zesílením lze nahradit 1M v bázi i odporem kùže - ten je ale v øádu desítek kOhm a více pouze pro nízká napìtí.
-Se síovým napìtím (230 V RMS) se kùže prorazí a odpor **výraznì poklesne**.
+**Se síovým napìtím (230 V RMS) se kùže prorazí a odpor výraznì poklesne**.
 
 #### Úkol 3.2
 > Rozsvítit LED pomocí NPN tranzistoru (zmìøit UBE, UCE, orientaèní výpoèet Rb, Rc)
 
-NPN bude použit jako spínaè  pro seriové zapojení èervené LED a rezistoru proti 5V,
+NPN bude použit jako spínaè pro seriové zapojení èervené LED a rezistoru proti 5V,
 takže v saturaci budu pøedpokládat nulový úbytek napìtí mezi kolektorem a emitorem.
 Pøi použití rezistoru 470 ohm v sérii s LED s dopøedným napìtím cca 1.8V by mìl v plnì sepnutém stavu LEDkou téci proud 
 `Ic = (5-1.8)/470 = 6.8mV`. Pøi proudovém zesilovacím èiniteli h<sub>21e</sub> = 432 je potøeba dodat do báze
@@ -49,17 +51,55 @@ není saturaèní napìtí není konstantní - záleží na míøe saturace.
 
 Princip zapojení úplnì identický jako u NPN, jen "zrcadlovì obráceno". PNP je pøipojen emitorem na napájení,
 na bázi je pøes 10k pøipojen generátor, dalších 10k je zapojeno mezi bázi a emitor jako pullup pro rychlejší zavírání.
-V kolektoru je v sérii èervená LED a 470R do zemì.
+V kolektoru je v sérii èervená LED a 470R do zemì. Použité zapojení je vlevo na schématu zapùjèeném ze zadání, na port STM32_Px.x
+je pøipojen generátor.
+
+![Zapojení PNP v obvodu](week_3/pnp_zapojeni.png)
+
+Pøi saturaci PNP tranzistoru lze zmìøit hodnoty U<sub>eb</sub> = 630 mV, U<sub>ce_sat</sub> = 53 mV
 
 Zajímavé jsou dva èasové prùbìhy se zapojení s PNP tranzistorem se sinusem a obdélníkem na vstupu.
 
 Sinusový vstup: kanál 1 je báze, kanál 2 je kolektor, kanál 3 je napìtí na rezistoru v kolektoru. Je vidìt, že
 obvod opìt má invertující charakter, zajímavý je nábìh napìtí na rezistoru (nábìžná hrana kanálu 3), kde 
 se projevuje exponenciální závislost proudu bází na napìtí, jež se lineární závislostí pøevádí na exp závislost proudu kolektorem
-na napìtí U<sub>eb</sub>
+na napìtí U<sub>eb</sub>.
 
 ![Prùbìh napìtí na PNP spínaèi](week_3/pnp_prubeh.png)
+
+Obdélníkový vstup: kanál 1 je báze, kanál 2 je kolektor, kanál 3 je napìtí na rezistoru v kolektoru, které je úmìrné tekoucímu proudu.
+Je zajímavé, že i pøes nulový proud kolektorem je spádná hrana napìtí U<sub>c</sub> pomalá. To je projev saturace LEDky, u které se vybíjí
+parazitní difuzní kapacita.
+
 ![Prùbìh napìtí na PNP spínaèi](week_3/pnp_obdelnik.png)
+
+#### Úkol 3.4
+> Rozsvítit LED pomocí N-MOSFET tranzistoru (zmìøit UGS, UDS, RDSON)
+
+![Prùbìh napìtí ](week_3/nmos-zapojeni.png)
+
+Zapojení zapùjèené ze zadání, nMOS je unipolární alternativa NPN bipoláru.
+
+Nastavováním napìtí pomocí trimmeru šlo namìøit následující data:
+Threshold voltage U<sub>TO</sub> je cca 1.9 V, když je U<sub>gs</sub> nižší, není MOSFET otevøen vùbec a neteèe proud drainem.
+Od pøibližnì 2.5V dál je MOSFET saturován a pøi dalším navyšování U<sub>gs</sub> již proud neroste, protože jej omezuje 
+rezistor v serii s LED. Pøi maximálním napìtí U<sub>gs</sub> = 3V3 má tranzistor odpor R<sub>ds_on</sub> = 1.5 ohmu. </br>
+Pro ilustraci pøikládám dva screenshoty z prùbìhù napìtí v obvodu.
+Kanál 1 je napìtí U<sub>gs</sub>, kanál 2 je U<sub>ds</sub>,
+kanál 3 je U<sub>ds</sub> + U<sub>LED</sub>, tedy úbytek napìtí na rezistoru.
+
+Prùbìh s U<sub>gs</sub> nìkde uprostøed rozsahu [U<sub>TO</sub>, 3V3]:
+
+![Prùbìh napìtí ](week_3/nmos-prubeh.png)
+
+Prùbìh s U<sub>gs</sub> tìsnì za U<sub>TO</sub>:
+
+![Prùbìh napìtí ](week_3/nmos-prubeh2.png)
+
+**POZOR** Na zajištìní definované úrovnì gatu MOSFETu! Bìhem resetu èi utržení vodièe bude vstup na gate
+v Hi-Z, takže bude tranzistor dìlat nepøedvídatelné kraviny. U BJT toto není takový problém, protože tam 
+musí pøes bázi téci proud a ten otevøeným obvodem nepoteèe.
+
 
 ## Týden 2 - RC èlánky, charakteristika LED
 Instrukce pro tento týden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283737/mod_resource/content/3/LPE_2_tyden_poznamky2.pdf
@@ -157,7 +197,7 @@ Držme v pamìti, že amplitudová frekvenèní charakteristika má maximum pro nekoneè
 Na vstupu èlánku je sinusový signál s amplitudou 1500 mV, offsetem 1650 mV (støed rozsahu napájení) a promìnlivou frekvencí.
   - Frekvence skoro **nekoneèná** (50 kHz) </br>
     Oèekávám zeslabení signálu na jednu tøetinu a ménì. Zmìøená amplituda 449 mV øádovì sedí; H(s) = 1/3 totiž platí až pro nekoneènou frekvenci a
-další nezanedbatenou chybu vnáší nepøesné odeèítání hodnot. Na obrázku je 100 vzorkù z osciloskopu pracujícího na frekvenci 1MSps
+další nezanedbatenou chybu vnáší nepøesné odeèítání hodnot. Na obrázku je 100 vzorkù z osciloskopu pracujícího na frekvenci 1MSps,
 každý dílek na ose èasové tak odpovodá jedné mikrosekundì.
   ![Derivaèní èlánek, nekoneèná frekvence](week_2/derivacni-vyssi.png)
   - Frekvence **zlomová** (108Hz)</br>
