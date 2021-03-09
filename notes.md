@@ -15,11 +15,11 @@ Instrukce pro tento týden jsou na https://moodle.fel.cvut.cz/pluginfile.php/2837
 <img align="right" src="week_3/common-emitor.png">
 
 Základní zapojení se spoleèným emitorem.
-Na bázi je zapojen 1 mega ohm proti 3V3, úbytek na nìm zmìøen jako 2.660 V (na PN pøechod BE zbývá 636 mV).
-V kolektoru je èervená LED a rezistor 470R s serii proti 3V3, na R úbytek 528 mV.
+Na bázi je zapojen 1 megaohm proti 3V3, úbytek na nìm zmìøen jako 2.660 V (na PN pøechod B->E zbývá 636 mV).
+V kolektoru je èervená LED a rezistor 470R s serii proti 3V3, na R<sub>k</sub> úbytek 528 mV.
 
-Z toho plyne proud bází `I<sub>b</sub> = 2'660/1'000'000 = 2.6 uA` a proud kolektorem `I<sub>c</sub> = 528/470 = 1.12 mA`
-a zesilovací èinitel `h<sub>21E</sub> = I<sub>b</sub> / I<sub>c</sub> = 432`, což je oèekávatelná hodnota u signálového BJT.
+Z toho plyne proud bází I<sub>b</sub>` = 2'660/1'000'000 = 2.6 uA` a proud kolektorem I<sub>c</sub>` = 528/470 = 1.12 mA`
+a zesilovací èinitel h<sub>21E</sub>` = Ic / Ib = 432`, což je oèekávatelná hodnota u signálového BJT.
 Podle datasheetu jsou zesílení BJT s pøíponou "C" v rozsahu 400-800, takže daný tranzistor je v garantovaném rozsahu.
 
 S tímto zesílením lze nahradit 1M v bázi i odporem kùže - ten je ale v øádu desítek kOhm a více pouze pro nízká napìtí.
@@ -42,17 +42,20 @@ LED a rezistoru je skuteènì zanedbatelné. Zmìøený úbytek na pøechodu báze-emitor
 
 Protože NPN tranzistor v sepnutém stavu pøizemòuje svùj kolektor, lze z nìj sestrojit nejhloupìjší invertor. Vysoká úroveò 
 na bázi zpùsobí nízkou úroveò na kolektoru a naopak. Viz následující obrázek. Kanál 1 je U<sub>be</sub>, kanál 2 je U<sub>ce</sub>.
-Zajímavé je prohnutí U<sub>ce</sub> v oblasti, kde má signál na bázi maximum. Saturace BJT neprobìhne najednou,
-není saturaèní napìtí není konstantní - záleží na míøe saturace.
+Zajímavé je prohnutí U<sub>ce</sub> v oblasti, kde má signál na bázi maximum. Saturace BJT neprobìhne najednou, s rostoucím
+proudem stoupá míra saturace. Kvùli tomu není ani saturaèní napìtí ve smìru C->E konstantní, nýbrž klesá s rostoucí mírou saturace.
 
 ![Negace signálu pomocí NPN tranzistoru](week_3/invertor.png)
 #### Úkol 3.3
 > Rozsvítit LED pomocí PNP tranzistoru (zmìøit UBE, UCE)
 
-Princip zapojení úplnì identický jako u NPN, jen "zrcadlovì obráceno". PNP je pøipojen emitorem na napájení,
-na bázi je pøes 10k pøipojen generátor, dalších 10k je zapojeno mezi bázi a emitor jako pullup pro rychlejší zavírání.
-V kolektoru je v sérii èervená LED a 470R do zemì. Použité zapojení je vlevo na schématu zapùjèeném ze zadání, na port STM32_Px.x
-je pøipojen generátor.
+Princip zapojení úplnì identický jako u NPN, jen "zrcadlovì obráceno". PNP je v zapojení se spoleèným emitorem (emitor na napájení, vstup na bázi, zátìž v kolektoru).
+Na bázi je pøes odpor 10k pøipojen generátor, dalších 10k je zapojeno mezi bázi a emitor jako pullup pro rychlejší zavírání
+(vzniká vodivá cesta mezi bází a emitorem, která urychluje vynulování napìtí U<sub>be</sub> a rekombinaci nosièù v PN pøechodu).
+V kolektoru je v sérii èervená LED a 470R proti zemi. Použité zapojení je vlevo na schématu zapùjèeném ze zadání, na port STM32_Px.x
+je pøipojen generátor. Zapojení vpravo je základní zapojení pro spínání napájení vyššího, než dosahují logické úrovnì øídicí logiky
+(v takovém pøípadì by prosté zapojení PNP nestaèilo, protože logika by neumìla bázi PNP dostat dostateènì vysoko. Alternativou
+by bylo použít øízení open collector a PNP zavírat "samospádem" pomocí pullupu, øídicí pin by ale musel tolerovat vysoké napìtí.)
 
 ![Zapojení PNP v obvodu](week_3/pnp_zapojeni.png)
 
@@ -62,14 +65,15 @@ Zajímavé jsou dva èasové prùbìhy se zapojení s PNP tranzistorem se sinusem a obd
 
 Sinusový vstup: kanál 1 je báze, kanál 2 je kolektor, kanál 3 je napìtí na rezistoru v kolektoru. Je vidìt, že
 obvod opìt má invertující charakter, zajímavý je nábìh napìtí na rezistoru (nábìžná hrana kanálu 3), kde 
-se projevuje exponenciální závislost proudu bází na napìtí, jež se lineární závislostí pøevádí na exp závislost proudu kolektorem
-na napìtí U<sub>eb</sub>.
+se projevuje exponenciální závislost proudu bází na napìtí, jež se lineární závislostí Ic na Ib pøevádí na exp závislost proudu kolektorem
+na napìtí U<sub>eb</sub>. Jinými slovy: pakliže `Ib ~ exp(Ueb)` a `Ic = Ib * h21e`, poté `Ic ~ exp(Ueb)`.
+Z tohoto dùvodu lze na rezistoru pozorovat exponenciální nábìh proudu kolektorem.
 
 ![Prùbìh napìtí na PNP spínaèi](week_3/pnp_prubeh.png)
 
-Obdélníkový vstup: kanál 1 je báze, kanál 2 je kolektor, kanál 3 je napìtí na rezistoru v kolektoru, které je úmìrné tekoucímu proudu.
-Je zajímavé, že i pøes nulový proud kolektorem je spádná hrana napìtí U<sub>c</sub> pomalá. To je projev saturace LEDky, u které se vybíjí
-parazitní difuzní kapacita.
+Další mìøení je pro obdélníkový vstup: kanál 1 je báze, kanál 2 je kolektor, kanál 3 je napìtí na rezistoru v kolektoru, které je úmìrné tekoucímu proudu.
+Je zajímavé, že i pøes nulový proud kolektorem je spádná hrana napìtí U<sub>c</sub> pomalá. To je projev saturace LEDky, u které se 
+pøechodovým dìjem vybíjí parazitní difuzní kapacita PN pøechodu.
 
 ![Prùbìh napìtí na PNP spínaèi](week_3/pnp_obdelnik.png)
 
@@ -81,24 +85,28 @@ parazitní difuzní kapacita.
 Zapojení zapùjèené ze zadání, nMOS je unipolární alternativa NPN bipoláru.
 
 Nastavováním napìtí pomocí trimmeru šlo namìøit následující data:
-Threshold voltage U<sub>TO</sub> je cca 1.9 V, když je U<sub>gs</sub> nižší, není MOSFET otevøen vùbec a neteèe proud drainem.
-Od pøibližnì 2.5V dál je MOSFET saturován a pøi dalším navyšování U<sub>gs</sub> již proud neroste, protože jej omezuje 
+Threshold voltage U<sub>TO</sub> je cca 1.9 V, když je U<sub>gs</sub> nižší, není MOSFET otevøen vùbec a mìøitelný proud drainem neteèe.
+Od pøibližnì 2.5V dál má MOSFET zaškrcený kanál a pøi dalším navyšování U<sub>gs</sub> již proud neroste, protože jej omezuje 
 rezistor v serii s LED. Pøi maximálním napìtí U<sub>gs</sub> = 3V3 má tranzistor odpor R<sub>ds_on</sub> = 1.5 ohmu. </br>
 Pro ilustraci pøikládám dva screenshoty z prùbìhù napìtí v obvodu.
 Kanál 1 je napìtí U<sub>gs</sub>, kanál 2 je U<sub>ds</sub>,
-kanál 3 je U<sub>ds</sub> + U<sub>LED</sub>, tedy úbytek napìtí na rezistoru.
+kanál 3 je U<sub>ds</sub> + U<sub>LED</sub>. Proto platí, že úbytek napìtí na rezistoru je `3V3 - kanál 3`.
 
-Prùbìh s U<sub>gs</sub> nìkde uprostøed rozsahu [U<sub>TO</sub>, 3V3]:
-
-![Prùbìh napìtí ](week_3/nmos-prubeh.png)
-
-Prùbìh s U<sub>gs</sub> tìsnì za U<sub>TO</sub>:
+Prùbìh s U<sub>gs</sub> tìsnì za U<sub>TO</sub>. Je vidìt, že úbytek na R (=doplnìk kanálu 3 do plného napìtí) je minimální,
+obvodem tedy ještì skoro nic neteèe. Napìtí 3v3 se dìlí mezi PN pøechod LED a napìtí ve smìru D->S MOSFETu.
 
 ![Prùbìh napìtí ](week_3/nmos-prubeh2.png)
 
-**POZOR** Na zajištìní definované úrovnì gatu MOSFETu! Bìhem resetu èi utržení vodièe bude vstup na gate
-v Hi-Z, takže bude tranzistor dìlat nepøedvídatelné kraviny. U BJT toto není takový problém, protože tam 
-musí pøes bázi téci proud a ten otevøeným obvodem nepoteèe.
+Prùbìh s U<sub>gs</sub> = cca 2.32V (kdesi v intervalu [U<sub>TO</sub>, 3V3]). Úbytek D->S klesá (klesá tedy odpor MOSFETu
+a roste proud). Pokles napìtí na kanálu 3 odráží nárùst poklesu napìtí na rezistoru.
+
+![Prùbìh napìtí ](week_3/nmos-prubeh.png)
+
+
+
+**POZOR** na zajištìní definované úrovnì gate MOSFETu! Bìhem resetu èi pøi utržení vodièe bude vstup na gate
+v Hi-Z, a tranzistor bude dìlat nepøedvídatelné kraviny - bude otevøen, uzavøen, nebo nìco mezi.
+U BJT toto není takový problém, protože tam musí pøes bázi téci proud a ten otevøeným obvodem nepoteèe.
 
 
 ## Týden 2 - RC èlánky, charakteristika LED
