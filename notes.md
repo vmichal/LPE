@@ -102,7 +102,10 @@ a roste proud). Pokles napìtí na kanálu 3 odráží nárùst poklesu napìtí na rezist
 
 ![Prùbìh napìtí ](week_3/nmos-prubeh.png)
 
-
+Ani pøi dalším navyšování napìtí na gate se odpor MOSFETu výraznì nemìní. Experiment (pod dozorem
+ostøíleného HW návrháøe): Pøivést 5V na gate, 3v3 na drain, gnd na source. Vše jen pulsnì, aby nedošlo k poškození
+lineárního regulátoru. Mìøení z multimetru: `Id = 320 mA`, `Uds = 750 mV`, na lineárním regulátoru pokles o 2V,
+na spojích nepájivého pole úbytek 600 mV. Radìji zastaveno, aby nepovolila pojistka v USB. Závìr: Chce to tvrdší zdroj.
 
 **POZOR** na zajištìní definované úrovnì gate MOSFETu! Bìhem resetu èi pøi utržení vodièe bude vstup na gate
 v Hi-Z, a tranzistor bude dìlat nepøedvídatelné kraviny - bude otevøen, uzavøen, nebo nìco mezi.
