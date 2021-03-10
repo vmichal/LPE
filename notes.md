@@ -31,7 +31,7 @@ S tímto zesílením lze nahradit 1M v bázi i odporem kùe - ten je ale v øádu desí
 NPN bude pouit jako spínaè pro seriové zapojení èervené LED a rezistoru proti 5V,
 take v saturaci budu pøedpokládat nulovı úbytek napìtí mezi kolektorem a emitorem.
 Pøi pouití rezistoru 470 ohm v sérii s LED s dopøednım napìtím cca 1.8V by mìl v plnì sepnutém stavu LEDkou téci proud 
-`Ic = (5-1.8)/470 = 6.8mV`. Pøi proudovém zesilovacím èiniteli h<sub>21e</sub> = 432 je potøeba dodat do báze
+`Ic = (5-1.8)/470 = 6.8mA`. Pøi proudovém zesilovacím èiniteli h<sub>21e</sub> = 432 je potøeba dodat do báze
 proud alespoò `Ib = Ic/h21e = 15 uA`. Budu-li pøedpokládat, e napìovı úbytek pøechodu
 BE se nebude pøíliš mìnit od úlohy 3.1, a zùstane tedy cca 650mV, poté do báze potøebuji rezistor nejvıše
 `Rb_max = (3V3 - 0.65)/15uA = 176 kOhm`. Pouití napøíklad 22kOhm nám dá "šestinásobnou jistotu",
@@ -59,7 +59,7 @@ by bylo pouít øízení open collector a PNP zavírat "samospádem" pomocí pullupu, 
 
 ![Zapojení PNP v obvodu](week_3/pnp_zapojeni.png)
 
-Pøi saturaci PNP tranzistoru lze zmìøit hodnoty U<sub>eb</sub> = 630 mV, U<sub>ce_sat</sub> = 53 mV
+Pøi saturaci PNP tranzistoru lze zmìøit hodnoty U<sub>eb</sub> = 630 mV, U<sub>ec_sat</sub> = 53 mV
 
 Zajímavé jsou dva èasové prùbìhy se zapojení s PNP tranzistorem se sinusem a obdélníkem na vstupu.
 
@@ -84,10 +84,10 @@ pøechodovım dìjem vybíjí parazitní difuzní kapacita PN pøechodu.
 
 Zapojení zapùjèené ze zadání, nMOS je unipolární alternativa NPN bipoláru.
 
-Nastavováním napìtí pomocí trimmeru šlo namìøit následující data:
+Nastavováním napìtí na gate pomocí trimmeru šlo namìøit následující data:
 Threshold voltage U<sub>TO</sub> je cca 1.9 V, kdy je U<sub>gs</sub> niší, není MOSFET otevøen vùbec a mìøitelnı proud drainem neteèe.
-Od pøiblinì 2.5V dál má MOSFET zaškrcenı kanál a pøi dalším navyšování U<sub>gs</sub> ji proud neroste, protoe jej omezuje 
-rezistor v serii s LED. Pøi maximálním napìtí U<sub>gs</sub> = 3V3 má tranzistor odpor R<sub>ds_on</sub> = 1.5 ohmu. </br>
+Od pøiblinì 2.5V dál je proud MOSFETem omezen vnìjším obvodem a pøi dalším navyšování U<sub>gs</sub> ji proud neroste.
+Pøi maximálním napìtí U<sub>gs</sub> = 3V3 má tranzistor odpor R<sub>ds_on</sub> = 1.5 ohmu. </br>
 Pro ilustraci pøikládám dva screenshoty z prùbìhù napìtí v obvodu.
 Kanál 1 je napìtí U<sub>gs</sub>, kanál 2 je U<sub>ds</sub>,
 kanál 3 je U<sub>ds</sub> + U<sub>LED</sub>. Proto platí, e úbytek napìtí na rezistoru je `3V3 - kanál 3`.
@@ -295,6 +295,7 @@ Pøes ochranı R se na anodu pøivede PWM promìnlivé støídy. LED svítí podle stejno
 rozdìlené mezi LED a rezistor. Pøi dostateèné frekvenci PWM (u mne asi od 60 Hz) u nejsou vùbec vidìt probliky. </br>
 Zkoušel jsem hledat projevy parazitní difuzní kapacity PN pøechodu uvnitø LED, ale ani s vyšší vzorkovací frekvencí nebyly hrany PWM vıraznì
 deformované; zùstaly strmé a nebyla pozorovatelné exponenciála. </br> Záznam mìøení napìtí na diodì (je vykresleno deset period signálu):
+**TODO** ovìøit, e to byla skuteènì difuzní kapacita. Pokusit se ji zmìøit.
 ![Záznam osciloskopu](week_1/1.2.png)
 Vısledek odpovídá døíve zmìøené hodnotì dopøedného napìtí pomocí *diode testeru* na multimetru, která byla 1620 mV.
 
