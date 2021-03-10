@@ -1,10 +1,107 @@
 # Poznámky z pøedmìtu LPE
 Usmoleno **Vojtìchem Michalem** (vojta.michall@email.cz) v prùbìhu letního semestru 2021 (B202). </br>
 Oficiální materiály jsou na Moodle na stránce https://moodle.fel.cvut.cz/course/view.php?id=5814
-a na Embedded serveru https://embedded.fel.cvut.cz/kurzy/lpe/LPE2021.
+a na Embedded serveru https://embedded.fel.cvut.cz/kurzy/lpe/LPE2021. </br>
+Seznam souèástek s pinout a schematickımi znaèkami: https://moodle.fel.cvut.cz/pluginfile.php/293919/mod_resource/content/3/Soucastky_vyvody_LPE_4.pdf
 
 Tıdny jsou èíslovány chronologicky, poznámky k nim jsou uvedeny v obráceném poøadí.
 Jako první je tedy uveden poslední tıden, scrollováním na konec stránky se èlovìk dostane na tıden první.
+
+## Tıden 4 - Operaèní zesilovaèe
+Instrukce pro tento tıden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283742/mod_resource/content/4/LPE_4_tyden_poznamky_2021_v3.pdf
+
+Vırobní technologií lze operáky rozdìlit na bipolární (napø OPA227) a unipolární - dále dìleny podle JFETù/CMOSù na vstupu
+  - Bipolární  - nízkı napìovı šum pøi zkratu vstupù (CMOS tøeba 8uV peak/peak, OPA227 zvládne tøeba 90nVp-p .. 2 øády rozdíl)
+     Vstupní proud v klidu (input bias current) v øádu tøeba 2.5 nA (OPA227).
+  - Unipolární: Fantastickı klidovı vstupní proud - +/-1 pikoampér pro CMOS, JFETy tøeba femtoampéry.
+    - JFETy - nízkı proudovı šum
+    - CMOSy (tøeba MCP6002) - Fungují i pro nízká napìtí (i tøeba 1.8V), vhodná tak k mikrokontrolerùm
+
+V pøípadì MCP6002 je zmìøitelná "body dioda" ve smìru Vss->VDD. Pøi pøepólování napájení se otevøe a bude to hoøet.
+
+Ideální **open-loop gain** je nekoneèno, reálnì 88-112 dB (pro MCP6003). OPA227 tøeba 160 dB (10<sup>8</sup> krát)
+
+**Gain-bandwidth product** - souèin open-loop gain a šíøky pásma (bandwidth), odráí frekvenènì závislé vlastnosti operáku.
+Na frekvenci `bandwidth` je jednotkové zesílení. Pøi stejnosmìrném vstupním napìtí je zesílení `open-loop gain`. Kdy jsme nìkde
+mezi, poklesá s rostoucí frekvencí zesílení, kterého umí operák dosáhnout (rychlé hrany vyadují rychlé pøebìhy a OZ má koneènı slew rate).
+Souèin frekvence a zesílení bude omezen parametrem `Gain-bandwidth product`.
+
+#### Úkol 4.1
+> Zapojte OZ jako sledovaè napìtí (impedanèní oddìlovaè), na vstupu napìtí na LED (ILED=5-20mA), zmìøte vıstupní
+odpor tohoto zapojení pro IOUT = 0 a 4 mA (zatíení OZ)
+
+<img align="right" src="week_4/ubytek_s_proudem.png">
+Ideální vlastnosti sledovaèe: R<sub>in</sub> = nekoneèno, R<sub>out</sub>= 0.
+Reálnì má vıstupní stupeò operáku nenulovı vnitøní odpor,
+pro vyšší proudy zaène vıstupní napìtí OZ poklesat kvùli úbytku. "Vnitøní odpor" mùe bıt pro MCP6002 øádovì 100 ohm.
+
+Na grafu od Ing. Petruchy je osa x vıstupní proud v mA, osa y je ádané napìtí ve voltech.
+
+Mìøím v bodì Voltmetr1 (vıstup operáku) pøi zátìích 0mA a pøiblinì 4mA.
+Zmìøená napìtí: bez zatíení 1811.97mV, pøi zátìi 4.17mA napìtí 1815.13mV. Z toho lze vypoèíst
+vıstupní odpor pro nízké proudy R<sub>out</sub> = 0.76 ohm.
+![Napìovı sledovaè](week_4/Rout.jpg)
+
+Pozn: Napìovı sledovaè je ze svého principu zpìtnovazební soustava, která v principu nemusí bıt vùbec stabilní.
+U nìkterıch zesilovaèù se toto explicitnì uvádí jako **unity gain stability**. Pokud vzniklé zapojení neí stabilní,
+OZ bude mít tendenci oscilovat. Dùsledkem potom je, e multimetr mìøící RMS tøeba bude zdánlivì mìøit rozumná èísla,
+ale osciloskop ukáe rychlé smyèky. Toté se mùe stát napøíklad u low drop-out regulátorù.
+
+Nevyuitım operákùm je potøeba definovat úroveò vstupù, napøíklad zapojením sledovaèe zemì:
+![Napìovı sledovaè](week_4/definovane_vstupy.jpg)
+#### Úkol 4.2
+> Sestavte neinvertující zesilovaè napìtí 11x a zmìøte pomocí nìj saturaèní napìtí NPN tranzistoru.
+
+Zapojení je na obrázku, odpor R<sub>b</sub> bude nabıvat vícero hodnot pro dosaení rùzného stupnì saturace.
+![Napìovı sledovaè](week_4/saturace.jpg)
+
+Napìtí na kolektoru NPN tranzistoru je pøímo rovné napìtí U<sub>+</sub> na neinvertující svorce OZ.
+Napìtí U<sub>o</sub> je na vıstupu operaèního zešilovaèe (bod *Voltmetr1*).
+
+a) Zmìøená napìtí pro bázovı odpor 10k: U<sub>+</sub> = 33 mV, U<sub>o</sub> = 363 mV.
+Dává vısledek smysl? OZ je zapojen s dìlièem 1k a 10k, jeho zesílení je `A = 1 + 10/1 = 11`.
+Na vıstupu OZ tak oèekávám 33mV * 11 = 363 mV, co se a podezøele rovná zmìøenému napìtí.
+Sešla se nízká zátì vıstupu OZ `< 0.3 mA` a zøejmì velmi dobré hodnoty rezistorù v dìlièi.
+
+b) Zmìøená napìtí pro 5k v bázi: U<sub>+</sub> = 24 mV, U<sub>o</sub> = 252 mV.
+c) Zmìøená napìtí pro 470 ohmù v bázi: U<sub>+</sub> = 14 mV, U<sub>o</sub> = 150 mV.
+Závìry jsou stejné jako v podúloze a). Hodnoty jsou oèekávatelné a srovnatelné s mìøeními z tıdne 3.
+
+Praktickı vıznam je napøíklad kvùli pøesnìjšímu mìøení multimetry. Digitální multimetr má nejistotu mìøení
+závislou na aktuálním mìøicím rozsahu. Paklie by nejniší rozsah byl tøeba 200 mV a nejistota tøeba 0.5% rozsahu,
+vnášelo by to implicitnì chybu vnìøení 1 mV. Kdybychom pak chtìli mìøit napìtí tøeba 10 mV, rovnou máme 10% relativní chybu.
+Pouitím zesilovaèe se zvıší mìøená hodnota a tím poklesne vliv chyby z rozsahu.
+
+#### Úkol 4.4
+> Zmìøte vstupní napìovı offset pouitého operaèního zesilovaèe (MCP6002).
+
+![Napìovı sledovaè](week_4/offsety.jpg)
+
+Schéma zapojení:
+
+Mìøení s pouitím R4 = 120k nedávalo ádné mìøitelné vısledky.
+Pro R4 = 1 megaohm (zesílení operáku `A = 1+1'000'000/470 = 2128`) jsem namìøil:
+  - U<sub>o</sub> = 1.4 mV pro OZ pod piny 1,2,3
+  - U<sub>o</sub> = 5.6 mV pro OZ pod piny 5,6,7
+
+S ohledem na zesílení to odpovídá vstupním offsetùm 0.66uV pro OZ na pinech 1,2,3 a 2.63uV pro OZ na pinech 5,6,7.
+Datasheet garantuje maximální offset 4.5 mV, take namìøené offsety jsou velice velice velice dobré
+(a v rámci paralelky na cvika asi celkem vıjimeèné).
+
+
+#### Úkol 4.3
+> Sestavte zapojení I/U pøevodníku s OZ a pouijte jej pro zpracování signálu z fotodiody (náhrada èirou LED). Na
+fotodiodu blikejte pomocí LED (frekvence 1 Hz-1 kHz, støída 2-50 %). Uspoøádejte dané prvky jako reflexní senzor.
+
+Zapojení na obrázku:
+![Napìovı sledovaè](week_4/ledky.jpg)
+
+*generátor* generuje obdélníkovı signál, kterım se spíná zelená vysílací LED v kolektoru NPN tranzistoru.
+Ta je optickou vazbou spojena s pøijímající èervenou LED, kterou kvùli dopadajícímu svìtlu teèe proud, 
+jen je prvním operaèním zesilovaèem pøeveden na napìtí; to je zesíleno druhım operákem 
+(s pouitím R2 = 188k, R4 = 10k je zesílení `A = 1+188/10 ~ 20`) a mìøeno kanálem 2 osciloskopu.
+
+
 
 ## Tıden 3 - Tranzistory
 Instrukce pro tento tıden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283739/mod_resource/content/4/LPE_3_tyden_poznamky_2021_v4.pdf
