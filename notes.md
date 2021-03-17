@@ -7,6 +7,51 @@ Seznam souèástek s pinout a schematickými znaèkami: https://moodle.fel.cvut.cz/p
 Týdny jsou èíslovány chronologicky, poznámky k nim jsou uvedeny v obráceném poøadí.
 Jako první je tedy uveden poslední týden, scrollováním na konec stránky se èlovìk dostane na týden první.
 
+## Týdek 5 - Pokroèilejší operaèní zesilovaèe
+Instrukce pro tento týden jsou na https://moodle.fel.cvut.cz/pluginfile.php/295565/mod_resource/content/2/LPE_5_tyden_poznamky_2021_partII_v2.pdf
+
+#### Úkol 4.6
+> Zapojte OZ jako komparátor bez a s hysterezí
+
+Komparátor musí saturovat na napájení èi na zem => žádná nebo kladná zpìtná vazba (na neinvertující svorku).
+Hysterezi zpùsobuje rezistor R1 pøipojený mezi neinvertující svorku a výstup OZ. Dále je k neinv. svorce
+pøipojen výstup sledovaèe udržujícího konstantní úrovìò nastavenou trimmerem. Na invertující svorce je pøipojen 
+kondenzátor z RC èlánku vyhlazujícího obdélníky generované PWM na exponenciálu.
+Schéma:
+
+"Síla" hystereze (jak daleko jsou od sebe pøeklápìcí úrovnì) bude závislá na hodnotì rezistorù kolem OZ. 
+Pakliže oznaèím výstup OZ jako Uo, napìtí na výstupu sledovaèe U<sub>ref</sub> a rozhodovací úroveò hystereze jako U<sub>H</sub>,
+pomocí uzlových napìtí lze odvodit vztah
+
+![Odvození hystereze](week_5/hystereze_eq.gif).
+
+Pro získání obou úrovní U<sub>H+</sub> a U<sub>H-</sub> je potøeba dosadit Uo = 3V3 a Uo = 0V. Speciální pøípady:
+  - pro R1 = nekoneèno (žádná zpìtná vazba) se druhý sèítanec redukuje na 0 a platí U<sub>H</sub> = U<sub>ref</sub>.
+  komparátor se pøeklápí bez jakékoli hystereze
+  - pro R1 = 0 (jednotková ZV) je zlomek roven jednièce, referenèní napìtí se odeète a zbývá U<sub>H</sub> = U<sub>o</sub>
+  vzdálenost rozhodovacích úrovní je celý rozsah napájení (3V3).
+  - pro R1 = R2 ("polovièní" ZV) je zlomek roven 1/2 a rozhodovací úrovnì jsou v polovinì vzdálenosti U<sub>ref</sub>
+  a Uo; vzdálenost rozhodovacích úrovní je 50% rozsahu napájení (3V3).
+  - Obecnì: Aèkoli render stojí za zlámanou grešli, po úpravách lze odvodit (pomìrnì oèekávatelný) výsledek,
+  že "šíøka" hystereze je pøímo úmìrná dìlicímu pomìru dìlièe R1, R2.
+
+![Odvození hystereze](week_5/hystereze_rozdil.gif)
+
+Výstup trimmeru 1.667V
+
+#### Úkol 4.7
+> Zapojte OZ jako generátor obdélníkového signálu (Astabilní Klopný Obvod)
+
+#### Úkol 4.8
+> pøevodník obdélníkového signálu na trojúhelníkový (integrátor)
+
+#### Úkol 4.9
+> Sestavte zapojení s OZ – regulátory teploty
+
+teèe 127 mA z 5V
+
+ustálení za 3 min 35 s
+
 ## Týden 4 - Operaèní zesilovaèe
 Instrukce pro tento týden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283742/mod_resource/content/4/LPE_4_tyden_poznamky_2021_v3.pdf
 
