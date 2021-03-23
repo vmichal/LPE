@@ -13,14 +13,16 @@ Instrukce pro tento tıden jsou na https://moodle.fel.cvut.cz/pluginfile.php/2955
 #### Úkol 4.6
 > Zapojte OZ jako komparátor bez a s hysterezí
 
-Komparátor musí saturovat na napájení èi na zem => ádná nebo kladná zpìtná vazba (na neinvertující svorku).
-Hysterezi zpùsobuje rezistor R1 pøipojenı mezi neinvertující svorku a vıstup OZ. Dále je k neinv. svorce
-pøipojen vıstup sledovaèe udrujícího konstantní úrovìò nastavenou trimmerem. Na invertující svorce je pøipojen 
-kondenzátor z RC èlánku vyhlazujícího obdélníky generované PWM na exponenciálu.
-Schéma:
+Komparátor U1A musí saturovat na napájení èi na zem, proto nemá ádnou nebo jen kladnou zpìtnou vazbu 
+(vıstup je pøiveden na neinvertující vstupní svorku).
+Hysterezi zajišuje rezistor R1 pøipojenı mezi neinvertující svorku a vıstup U1A. Dále je k neinv. svorce
+pøipojen vıstup sledovaèe U1B udrujícího konstantní úrovìò nastavenou trimmerem RV1. Na invertující svorce je pøipojen 
+kondenzátor C1 z RC èlánku vyhlazujícího obdélníky generované PWMkou na exponenciálu. </br>
+**Schéma:**
+![Schéma 4.6](week_5/schema4.6.jpg)
 
-"Síla" hystereze (jak daleko jsou od sebe pøeklápìcí úrovnì) bude závislá na hodnotì rezistorù kolem OZ. 
-Paklie oznaèím vıstup OZ jako Uo, napìtí na vıstupu sledovaèe U<sub>ref</sub> a rozhodovací úroveò hystereze jako U<sub>H</sub>,
+"Síla" hystereze (jak daleko jsou od sebe pøeklápìcí úrovnì) bude závislá na hodnotì rezistorù R1, R2 kolem komparátoru. 
+Paklie oznaèím vıstup U1A jako Uo, napìtí na vıstupu sledovaèe U<sub>ref</sub> a rozhodovací úroveò hystereze jako U<sub>H</sub>,
 pomocí uzlovıch napìtí lze odvodit vztah
 
 ![Odvození hystereze](week_5/hystereze_eq.gif).
@@ -32,25 +34,155 @@ Pro získání obou úrovní U<sub>H+</sub> a U<sub>H-</sub> je potøeba dosadit Uo = 
   vzdálenost rozhodovacích úrovní je celı rozsah napájení (3V3).
   - pro R1 = R2 ("polovièní" ZV) je zlomek roven 1/2 a rozhodovací úrovnì jsou v polovinì vzdálenosti U<sub>ref</sub>
   a Uo; vzdálenost rozhodovacích úrovní je 50% rozsahu napájení (3V3).
-  - Obecnì: Aèkoli render stojí za zlámanou grešli, po úpravách lze odvodit (pomìrnì oèekávatelnı) vısledek,
-  e "šíøka" hystereze je pøímo úmìrná dìlicímu pomìru dìlièe R1, R2.
+  - **Obecnì:** Po úpravách lze odvodit (pomìrnì oèekávatelnı) vısledek,
+  e "šíøka" hystereze je pøímo úmìrná dìlicímu pomìru dìlièe R1, R2. Viz následující rovnice
 
 ![Odvození hystereze](week_5/hystereze_rozdil.gif)
 
-Vıstup trimmeru 1.667V
+**Pár namìøenıch prùbìhù:**</br>
+Kanály osciloskopu:
+  - CH1 = vıstup komparátoru (label `OSC1`)
+  - CH2 = pøeklápìcí úroveò (label `OSC2b`)
+  - CH3 = pøechodovı dìj na C1 (není zakresleno ve schematu)
+
+
+a) Silná hystereze (R1 = 10k),vıstup trimmeru U<sub>ref</sub> = 1.667V. </br>
+Podle pøedchozího odvození bych oèekával rozhodovací úrovnì 
+U<sub>H</sub> = `1.667 +/- (3.3-1.667) * 10k/(10k+10k) = 1.667 +/- 0.8165` = 2.4835V a 0.85V
+(na obrázku jsou rozhodovací úrovnì zmìøeny pomocí horizontálních kurzorù).
+![](week_5/komparator.png)
+
+b) ádná hystereze (R1 = inf), vıstup trimmeru 1.815V:
+![](week_5/komparator_bez_hystereze_1830_mV_stred.png)
+
+**Vliv rozhodovacích úrovní na støídu obdélníku**
+
+Na následujících prùbìhách lze pozorovat, jak nastavení rozhodovací úrovnì trimmerem ovlivní støídu generovaného obdélníku.
+Nízká rozhodovací úroveò znamená, e napìtí kondenzátoru bude vìtšinu doby nad rozhodovacími úrovnìmi a vıstup tak bude vìtšinu u doby na zemi.
+Naopak vyšší rozhodovací úroveò povede na vyšší støídu (relativnì delší dobu, kdy je vıstup U1A na napájení).
+Pro pøíliš vysoké/nízké rozhodovací úrovnì se nebude komparátor pøeklápìt vùbec a na vıstupu bude stále vysoká èi nízká úroveò.
+
+a) Slabá hystereze (R1 = 120k), vıstup trimmeru 2.749V:
+![](week_5/komparator_mensi_hystereze_2749_mV_stred.png)
+
+b) Slabá hystereze (R1 = 120k), vıstup trimmeru 1.093V:
+![](week_5/komparator_mensi_hystereze_1093_mV_stred.png)
+
+**Odolnost proti rušení**
+Hystereze komparátoru je nezbytná v aplikacích, kde je na vstupní signál superponované vysokofrekvenèní rušení.
+Jeho vlivem by se mohl komparátor pøeklápìt èastìji, ne je skuteènì ádoucí. Pøidáním hystereze vzniká urèitı
+pás uprostøed napìového rozsahu, kde komparátor nereaguje a èeká a na dosaení definované úrovnì.
+Pro kvalitní potlaèení šumu bychom si pøáli maximální hysterezi. Silnìjší hystereze ale s sebou nese inherentní problém,
+e by mohla potlaèit i vlastní vstupní signál, kterı si pøejeme detekovat (ilustrováno níe).
+
+K PWM z minulıch experimentù je na následujícím obrázku pøidána další PWM na frekvenci asi sedmkrát vyšší.
+Spojeny jsou pøes rezistory rùzné velikosti (rychlejší PWM simulující šum proto má niší amplitudu). 
+
+Na následujících prùbìhách je ilustrována špatná rozhodovací úroveò a poté úroveò "na hranì" pøípustnosti.
+Jednou se komparátor vùbec podle vstupního signálu nepøeklápí, jindy se pøeklápí jen v èásti pøípadù a není tak spolehlivı.
+![](week_5/spatna_rozhod_lvl.png)
+![](week_5/mediocre_rozhod_lvl.png)
 
 #### Úkol 4.7
 > Zapojte OZ jako generátor obdélníkového signálu (Astabilní Klopnı Obvod)
 
+Schéma je na obrázku. Prakticky je to stejnı komparátor jako v úloze vıše, jen se místo externí PWMky nechá
+kondenzátor pøebíjet pøímo z vıstupu U1A. Pro snazší nastavování referenèní úrovnì pomocí trimmeru RV1 jsem
+zapojil nevyuitı OZ jako napìovı sledovaè U1B.
+![Schéma 4.7](week_5/schema4.7.jpg)
+
+**Pozn.** Bez hystereze (R1 = inf) se v obvodu dìje kdoví jaká špatnost.
+Na následujícím obrázku je jakısi signál z vıstupu OZ, nejspíše je ale stále podvzorkovanı.
+Rozhodnì taková rychlá smyèka nebude zdravá ani pro OZ, ani pro EMC.
+![](week_5/AKO_bez_hystereze.png)
+
+Na referenèním napìtí nastavovaném trimmerem je závislá frekvence i støída generovaného obdélníku, jak
+se lze pøesvìdèit z následujících prùbìhù. Malá hystereze (R1 = 120k) a rùzné polohy trimmeru: </br>
+a) Trimmer U<sub>ref</sub> = 57mV:
+![](week_5/AKO_mala_hystereze_trimmer_57mV.png)
+b) Trimmer U<sub>ref</sub> = 683mV:
+![](week_5/AKO_mala_hystereze_trimmer_683mV.png)
+c) Trimmer U<sub>ref</sub> = 1659mV:
+![](week_5/AKO_mala_hystereze_trimmer_1659mV.png)
+d) Trimmer U<sub>ref</sub> = 3106mV:
+![](week_5/AKO_mala_hystereze_trimmer_3106mV.png)
+
+Korektnìjší je øíci, e na poloze trimmeru závisí doby T1 (napìtí na kondenzátoru stoupá) a T2, kdy se kondík vybíjí.
+Bìhem tìchto dob se napìtí po exponenciále pøesouvá mezi jednou a druhou pøeklápìcí úrovní. Z jejich pomìru a pøevrácené
+hodnoty souètu lze potom vypoèíst frekvenci a støídu generovaného obdélníka. </br>
+**Odvození**
+
+![](week_5/odvozeni1.jpg)
+
+Dává tento vısledek smysl? Protoe u(t) je vdy mezi u<sub>0</sub> a u<sub>inf</sub>, musí bıt zlomek menší jak 1,
+proto bude logaritmus zápornı a dohromady bude t kladné (co potøebujeme. Z povahy problému je triviálnì vidìt,
+e T1 i T2 musí bıt nezáporné. Dokonce musí bıt i kladné kvùli spojitosti napìtí na kondenzátoru a nenulové hysterezi).
+Odtud dále
+
+![](week_5/odvozeni2.jpg)
+
+Podaøilo se vyjádøit èasy T1 a T2 jako funkce referenèního napìtí na trimmeru. Sílu hystereze nastavovanou rezistorem R1
+neberu jako promìnnou, poèítám jen s hodnotou 120k, pro kterou jsem si namìøil data. Stìejní otázka: Dává to furt smysl?
+Logaritmy musí bıt záporné. U T2 to je vidìt triviálnì (ve jmenovateli je nìco kladného navíc, co není v èitateli).
+Pro T1 to není tak zøejmé. Protoe však 12/13 3V3 > 12/13 U<sub>ref</sub>, bude èitatel i jmenovatel zlomku zápornı,
+jmenovatel bude vìtší v absolutní hodnotì. Take asi OK.
+
+Èasová konstanta dìje je `tau = 12 ms`. Dosazením do rovnice (2) získáme
+  - pro U<sub>ref</sub> = 1.659V ... `T1 = 1.859 ms`, `T2 = 1.840 ms`, `f = 270 Hz`
+  - pro U<sub>ref</sub> = 0.683V ... `T1 = 1.199 ms`, `T2 = 4.060 ms`, `f = 190 Hz`
+  - pro U<sub>ref</sub> = 0.057V ... `T1 = 0.976 ms`, `T2 = 21.15 ms`, `f = 45 Hz`
+
+Pro U<sub>ref</sub> = 1659 mV jsme pøiblinì uprostøed rozsahu napájení, take by mìla vyjít støída 50%.
+Frekvence nejsou úplnì stejné jako ty mìøené osciloskopem (302, 205 a 47 hertzù).
+Moné chyby mohl do vıpoètu vnést fakt, e OZ není dokonale rail to rail. Další chyby pøirozenì vnáší
+nejistoty hodnot souèástek, kvantizaèní chyba pøi mìøení napìtí atd.</br> 
+Všeobecnì ale vısledky nejsou v rozporu s realitou, vıpoèet souhlasí.
+
 #### Úkol 4.8
 > pøevodník obdélníkového signálu na trojúhelníkovı (integrátor)
+
+Druhı OZ U1B akorát pøedìláme z napìového sledovaèe na integrátor, kterı se pøipojí na vıstup AKO.
+Pøipojení dalšího tvarovaèe s diodami na vıstup U1B by umonilo generovat sinusovı signál (starší metody
+analogového generování funkcí. Dnes èasto vytlaèovány digitálním øízením a DAC).
+![Schéma 4.8](week_5/schema4.8.jpg)
+Zajímavá je posunutá nula pro U1B pomocí kombinace rezistorù R5, R6.
+
+Generované signály jsou na následujícím prùbìhu (vıznam kanálù osciloskopu je podle schématu):
+  - CH1 = vıstup U1A (obdélník)
+  - CH2 = vıstup U1B (trojúhelník)
+  - CH3 = C1 (pøechodovı jev na RC èlánku)
+![Schéma 4.8](week_5/trojuhelnik.png)
 
 #### Úkol 4.9
 > Sestavte zapojení s OZ – regulátory teploty
 
-teèe 127 mA z 5V
+Na schématu jsou dvì alternativy
+  - Neosazenı R4a => U1B má jen zápornou zpìtnou vazbu a chová se lineárnì.
+  - Neosazenı R4b => U1B má jen kladnou zpìtnou vazbu a je to on/off spínaè.
 
-ustálení za 3 min 35 s
+Na vıstup OZ je pøipojena LED indikující "spuštìní topení" (v pøípadì lineárního módu ukazuje aktuální intenzitu topení).
+Dále je vıstupem OZ øízena báze NPN tranzistoru Q1, která reguluje proud tekoucí skrz R1. Joulovo teplo na nìm spálené
+ohøívá NTC (rostoucí teplota ... klesající odpor) TH1, kterı uzavírá zápornou zpìtnou vazbu kolem celého obvodu.
+Dvojice souèástek R3, RV1 nastavuje posunutou nulu pro U1B, kolem této úrovnì kolísá i napìtí na dìlièi R2,TH1.
+S rostoucí teplotou TH1 klesá jeho odpor, take klesá i vıstup dìlièe. V dùsledku toho poklesá napìtí na neinvertující
+svorce. Kdy poklesne pod úroveò invertující svorky, OZ vypne topení a TH1 se chladí.
+![Schéma 4.9](week_5/schema4.9.jpg).
+
+Stejnou zpìtnou vazbu by šlo uzavøít, kdybychom TH1 pøipojili do odporového dìlièe "nahoru" a otoèili svorky operáku.
+Klesající odpor TH1 by zvyšoval celkové napìtí na vıstupu dìlièe, tím by rostlo napìtí na inv. svorce
+a tím by operaèní zesilovaè brzdil topení.
+
+Špièkovı topicí proud byl 127 mA z 5V pøes R1=33ohm a Q1, to odpovídá vıkonu cca pùl wattu.
+(To mimochodem pøi napìtí 3v3 na vıstupu U1B odpovídá proudu 1.35 mA do báze Q1. Ten by tak mìl èinitel
+h21e tìsnì pod stovku, co je oèekávaná hodnota pro vıkonovı BJT. V pøedchozích úlohách se pouíval signálovı BJT
+se zesílením cca 400).
+
+**Identifikace systému:** Proces skokového ohøátí NTC z odporu 11 442 ohm (cca 22°C) na ustálenıch 4316 ohm (cca 45°C) trval 214 sekund.
+Pøedpokládejme, e se jedná o systém prvního øádu. Zmìøenı èas 214 s je pìtinásobek èasové konstanty, take by mohlo platit
+cca `tau ~ 43 s`. </br>
+To asi není úplnì nereálné, ale model má jistì nezanedbatenou chybu, protoe systém se není schopen ohøívat
+libovolnì rychle (Q1 omezuje ohøívací proud tekoucí pøes R1). Proto je velikost derivace teploty na TH1 omezená
+a ohøívání by bylo potøeba modelovat systémem øádu vyššího.
 
 ## Tıden 4 - Operaèní zesilovaèe
 Instrukce pro tento tıden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283742/mod_resource/content/4/LPE_4_tyden_poznamky_2021_v3.pdf
