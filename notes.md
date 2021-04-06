@@ -7,6 +7,92 @@ Seznam souèástek s pinout a schematickými znaèkami: https://moodle.fel.cvut.cz/p
 Týdny jsou èíslovány chronologicky, poznámky k nim jsou uvedeny v obráceném poøadí.
 Jako první je tedy uveden poslední týden, scrollováním na konec stránky se èlovìk dostane na týden první.
 
+## Týdek 6 - USART a audio aplikace
+Instrukce pro tento týden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283744/mod_resource/content/4/LPE_6_tyden_poznamky_2021_v3.pdf
+
+Tøídy zesilovaèù:
+  - Tøída A - jeden tranzistor jako lineární zesilovaè. Na nìm je stále velký ztrátový výkon, ale zesílení je kvalitní,
+  nejsou tam nìjaká pøechodová zkreslení.
+  - Tøíba B - Dva tranzistory trošku pøedotevøené stejnosmìrným pracovním bodem; ménì to topí, nic neteèe, když není nic na vstupu.
+  Vyvstávají drobná zkreslení, když se zavírá jeden a otevírá druhý.
+  - Tøída D - signál se porovnává komparátorem s trojúhelníkem konstantní (výraznì vyšší) frekvence. Tím vzniká odbélníková PWMka,
+    která øídí spínací n/p MOSFETy v protifázi. Na nich jsou v ideálním pøípadì nulové ztrátové výkony, protože je vždy jeden plnì 
+    otevøen a druhý plnì zavøen. Obecnì horší EMC, protože je potøebné rychlé spínání, jenž je potøeba dobøe blokovat a zvážit
+    i pøi návrhu desky. Nelze stoupat výkonem do nekoneèna
+Typický use case je zesilování audia, obecnì frekvence od 20 Hz do 20kHz. Samozøejmì i jiná použití, ale audiosignály jsou typický
+zástupce této oblasti frekvencí. 
+
+Zapojení pro tento týden:
+![](week_6/schema_mikrofon.jpg)
+
+
+> 6.1 Sestavte zesilovaè pro reproduktor s obvodem LM386 a tranzistorový zesilovaè pro mikrofon
+
+Pro generovanou PWM je impedance C8 paralelnì k C3, R3, RV1. Když C8 odstraníme, amplituda generovaného "støídavého" signálu
+výraznì povyroste. Vazby mezi mikrofonem a reproduktorem je pak velmi silná na celou vzdálenost, kterou mechanicky pøipouští vodièe.
+LM386 má bandwidth >> 20kHz, takže je náchylný na VF šumy. Záleží proto na délkách vodièù (žádné dlouhé antény) i layoutu.
+C4 je oddìluje stejnosmìrnì reproduktor od výstupu zesilovaèe. DC je nežádoucí - tepelné ztráty ohøívají reproduktor a pøitom negenerují zvuk.
+
+Dva zmìøené prùbìhy jsou na obrázcích. Modrý kanál je vstupní PWM, èervený kanál je napìtí na kolektoru Q1. </br>
+Na prvním obrázku jsou mikrofon a reproduktor skoro na dotek; fázový posun je minimální a mikrofon je saturován signálem.
+![](week_6/7khz_pointblank.png)
+Na druhém obrázku jsou mikrofon a reproduktor cca 5cm od sebe; fázový posun roste a amplituda na kolektoru tranzistoru slábne.
+![](week_6/mikrofon_5kHz_vzdalenost_4cm.png)
+
+##### Ovìøení pomocí aplikace Spectrodroid
+Asi není žádným pøekvapením, že obvod generuje pøesnì zadaný tón a že generuje liché harmonické,
+protože právì ty jsou obsaženy v obdélníkovém signálu. Spektrum zvuku pøi nastavení generátoru na 1kHz square:
+![](week_6/spektrum_harmonicke.jpg)
+Ve zvuku nejsou žádné relikty na nižší frekvenci (nyní je generátor nastaven na 3kHz sinus,
+proto nejsou pøítomné ani vyšší harmonické, ale to nelze ukázat kvùli nastavení rozsahu aplikace).
+![](week_6/spektrum_3khz.jpg)
+
+
+> 6.2 Zmìøte rychlost zvuku
+
+Na frekvenci 5kHz se posunul vstupní a výstupní signál o jednu periodu ve vzdálenosti 7 cm.
+Platí `s = v*t`, odtud `v = s/t`. Vzdálenost s mìøím pravítkem a èas t je perioda signálu @ 5kHz, 
+tedy `t = T = 1/f = 0.2 ms`. Mìlo by platit `v = 350 m/s`. Typická hodnota v suchém vzduchu pøi 20°C 
+je 343 m/s. Z mìøení vyšla zdánlivì pøesná hodnota, ale na pozadí je obrovská nejistota, protože aèkoli
+èas lze odeèíst pomìrnì pøesnì díky osciloskopu, vzdálenost mikrofonu a reproduktoru je odeètena s obrovskou
+nesistotou klidnì +/- 1 cm (obì souèástky je potøeba držet v optimální orientaci a èlovìk má málo rukou).
+S jistotou tak mùžeme hovoøit o dobré shodì v øádu stovek, na øád desítek bych se ale nespoléhal.
+
+Zamlèené pøedpoklady mìøení: elektrický signál se šíøí výraznì rychleji než zvuk ve vzduchu. Díky tomu je možné
+do jisté míry zanedbat dopravní zpoždìní zpùsobená prùchodem signálu zesilovaèi a vodièi. Další (pro 
+jednu frekvenci konstatní) fázové zpoždìní (pozorovatelné na prvním prùbìhu)
+zpùsobují RC filtry zapojené na obou stranách obvodu. 
+
+> 6.3 Pøipojte k mikrokontroléru pøevodník USB-serial,
+
+V návodu je popsáno pøipojení UART pøevodníku atp. Základní poznatky
+  - pozor na logickou úroveò - Pøevodník mùže umìt i 5V logiku, což by moho spálit 5V netolerující pin. TX line je **v klidu** držena ve **vysoké úrovni**!
+  - UART je **push pull**, takže pouze single-ended komunikace. Open drain UART lze emulovat softwarovì.
+  - Frame = 1 start bit + n bitù lsb first + konfigurovatelný poèet stop bitù
+
+Zachycený a dekódovaný frame pøi odesílání pøíkazu 's' (ascii hdonota 0x73) z poèítaèe do MCU. Bajty odešly dva, protože terminál není v raw režimu,
+pro potvrzení bylo potøeba stisknout enter, který byl odeslán jako line feed (TODO kouknout, jestli by odesílání z windows poslalo celé CRLF):
+![](week_6/uart.png)
+Zachycená odpovìï
+![](week_6/uart_response.png)
+
+Pozn: protože je stopbit stejné polarity jako je klidový stav na vodièích, není možné na první pohled identifikovat konec rámce. Je potøeba napoèítat si
+bity od zaèátku rámce, který je vždy odlišitelný nízkou úrovní. Proto není obecnì nezbytné mít obì zaøízení nastavená na stejný poèet stopbitù,
+pakliže se nám podaøí garantovat dostatek èasu mezi dvìma rámci (každý okamžik, kdy je lajna v klidu, lez poèítat jako další stop bit).
+
+jiné využití UARTu je s programem Dataplotter. Na obrázku jsou vykresleny èasový prùbìh napìtí na ochranném rezisotru u èervené LED a výstup
+detektoru špièek (test point 1) za kolekterm zesilovaèe Q1 z prvního zapojení. Nejprve jsou oba signály v klidu, následnì dojde k softwarovému
+vypnutí LED (spádná hrana na modrém kanálu) a hlasitému ukání o stùl (peaky na èerveném kanále).
+![Schéma 4.6](week_6/dataplotter.png)
+Prùbìh peak detektoru obsahuje stejnosmìrné posunutí. Jej se lze bavit umístìním kondenzátoru C5 mezi kolektor Q1 a anodu D1.
+
+> 6.4 Porovnejte spektrum generovaného zvuku 
+
+Pøepojení PWM vstupu z nuclea na pin PB1 na F042, na nìm lze generovat 16kHz PWMku s promìnlivou støídou tak, že
+po vyhlazení vzniká skoro 2kHz sinus. Protože je na periodu pouze osm vzorkù, obsahuje spektrum
+i vyšší harmonické, nikoli pouze èistý 2kHz signál.
+![Schéma 4.6](week_6/modulovane_spektrum.jpg)
+
 ## Týdek 5 - Pokroèilejší operaèní zesilovaèe
 Instrukce pro tento týden jsou na https://moodle.fel.cvut.cz/pluginfile.php/295565/mod_resource/content/2/LPE_5_tyden_poznamky_2021_partII_v2.pdf
 
