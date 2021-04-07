@@ -21,8 +21,13 @@ otestujte funkènost senzorù. Pomocí generátoru PWM a osciloskopu otestujte rychl
 Napište program, který bude èíst data z obou senzorù (20x za sekundu, èasování èítaèem), posílat je do PC a zobrazovat
 pomocí Data Plotteru (využijte program z minulého týdne).
 
+Schéma:
+![](week_7/schema71.jpg)
+
+
 a) Data plotter není moc vhodný pro vyhodnocení dynamiky fototranzistoru. Na nìj tedy použiji staré dobré LEO.
-Optická závora zapojena podle schématu, kanály osciloskopu pøipojeny na kolektor Q2 (kanál 1) a emitor Q1 (kanál 2).
+Optická závora zapojena podle schématu, kanály osciloskopu pøipojeny na kolektor Q2 (kanál 1) a emitor Q1 (kanál 2),
+na label `MCU` je pøipojen generátor PWMky promìnlivé frekvence, viz dále.
 Hoooooodnì od oka: Signál z fototranzistoru má 2.4V peak2peak, takže amplitudu 1.2V. Zkusme najít (experimentálnì)
 jeho bandwidth (na nìm bude mít amplituda velikost jen 0.707 pùvodní velikosti). Hledám tedy frekvenci, na které dosáhne
 maximum signálu na kanálu 2 hodnoty `1.2V (DC offset) + 0.7*1.2 = 2.04 V`. </br>
@@ -45,7 +50,12 @@ b) Pro vytvoøení programu staèilo vzít základní program z minulého týdne a prové
 Zdrojový kód je v repozitáøi ve složce `${root}/code/week7/main.cpp`,
 rovnìž na mbedu projekt `LPE_dataplotter.`
 
-Ovìøení, že data pøichází pøesnì na 20 hertzích (èasová základna je nastavena tak, aby celý rozsah obrazovky 
+Nové schéma zapojení:
+![](week_7/schema72.jpg)
+Vstupy AIN_R a AIN_B korespondují barvì kanálu na screenshotu z DataPlotteru. Èervený kanál je signál z fototranzistoru,
+modrý kanál je napìtí na senzoru teploty.
+
+Screenshot pro ovìøení, že data pøichází pøesnì na 20 hertzích (èasová základna je nastavena tak, aby celý rozsah obrazovky 
 dával právì jednu sekundu. Na obrazovce je viditìlných 20 pøíchozích vzorkù):
 ![](week_7/overeni_20hz.png)
 
@@ -91,7 +101,13 @@ pole, které se tak zbyteènì nièí - nevratnì se roztahují kontakty, zvyšuje se od
 barvu tlaèítka v ESPTermu podle toho, jestli na fototranzistor dopadá svìtlo z LED nebo ne (dopadá = zelená, nedopadá -
 èerná). Úkol 7.4 lze snadno odevzdat jakou souèást úkolu 7.3. Stejné zapojení jako v bodì 7.3.
 
-Zdrojový kód je v mbedu pro úsporu èasu ve složce `${root}/code/week7/LPE_wifi.cpp`. Základní prostøedí nakonec vypadá takto:
+
+Spojení signálových vodièù mezi MCU a wifi modulem (pozor na spojení zemí, napájení WiFi je z 5V
+poblíž USB konektoru na nepájivém poli):
+![](week_7/schema73.jpg)
+
+Zdrojový kód je v mbedu pro úsporu èasu ve složce `${root}/code/week7/LPE_wifi.cpp`.
+Základní uživatelské prostøedí nakonec vypadá takto.
 ![](week_7/term_hodne.jpg)
 
 Tlaèítka 1 a 2 (èíslováno zleva) mají stabilní barvu a ovládají LEDku on/off.</br>
