@@ -7,7 +7,7 @@ Seznam souèástek s pinout a schematickými znaèkami: https://moodle.fel.cvut.cz/p
 Týdny jsou èíslovány chronologicky, poznámky k nim jsou uvedeny v obráceném poøadí.
 Jako první je tedy uveden poslední týden, scrollováním na konec stránky se èlovìk dostane na týden první.
 
-## Týden 7 - WiFi
+## Týdny 7+8 - WiFi a hezèí formátování výstupu
 Instrukce pro tento týden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283748/mod_resource/content/7/LPE_7_tyden_poznamky_v6.pdf
 
 **Fotodioda** - zapojuje se v závìrném smìru, pøi dopadu záøení na PN pøechod prochází fotoproud úmìrný intenzitì záøení.
@@ -55,7 +55,7 @@ konstanta NTC mìøila v desítkách sekund, zatímco fototranzistor má desetiny mili
 Pøesto je i na signálu NTC patrný pomalý pokles, protože jej zahøívám pøiloženými prsty. Signál z fototranzistoru
 odpovídá støídavému zakrývání rukou (minima) a rozvìcení (maxima, tehdy je fototranzistor saturován s Uce cca 100mV).
 
-Senzory prohlašuji za funkèní.
+Senzory prohlašuji za funkèní.</br>
 
 ![](week_7/senzory.png)
 
@@ -91,7 +91,7 @@ pole, které se tak zbyteènì nièí - nevratnì se roztahují kontakty, zvyšuje se od
 barvu tlaèítka v ESPTermu podle toho, jestli na fototranzistor dopadá svìtlo z LED nebo ne (dopadá = zelená, nedopadá -
 èerná). Úkol 7.4 lze snadno odevzdat jakou souèást úkolu 7.3. Stejné zapojení jako v bodì 7.3.
 
-Zdrojový kód je v mbedu pro úsporu èasu ve složce `code/week7/LPE_wifi.cpp`. Základní prostøedí nakonec vypadá takto:
+Zdrojový kód je v mbedu pro úsporu èasu ve složce `${root}/code/week7/LPE_wifi.cpp`. Základní prostøedí nakonec vypadá takto:
 ![](week_7/term_hodne.jpg)
 
 Tlaèítka 1 a 2 (èíslováno zleva) mají stabilní barvu a ovládají LEDku on/off.</br>
