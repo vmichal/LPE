@@ -7,7 +7,94 @@ Seznam souèástek s pinout a schematickými znaèkami: https://moodle.fel.cvut.cz/p
 Týdny jsou èíslovány chronologicky, poznámky k nim jsou uvedeny v obráceném poøadí.
 Jako první je tedy uveden poslední týden, scrollováním na konec stránky se èlovìk dostane na týden první.
 
-## Týdek 6 - USART a audio aplikace
+## Týden 7 - WiFi
+Instrukce pro tento týden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283748/mod_resource/content/7/LPE_7_tyden_poznamky_v6.pdf
+
+**Fotodioda** - zapojuje se v závìrném smìru, pøi dopadu záøení na PN pøechod prochází fotoproud úmìrný intenzitì záøení.
+V propustném smìru více ménì normální dioda. Používá se tak tøetí kvadrant její VA charakteristiky. </br>
+**Fototranzistor** - NPN, kde pøechod báze -> emitor je zprostøedkován fotodiodou. Dopadem svìtla vzniká fotoproud,
+ten je rovnou zesílen zbytkem tranzistoru. Ménì lineární než fotodioda, nevhodný na mìøení, spíše na bistavové 
+rozhodování on/off (tøeba optické závory).
+
+> 7.1 Pøipojte k MCU fototranzistor a NTC termistor (dle obr.7.1). Pomocí funkce zobrazení grafu v režimu voltmetru
+otestujte funkènost senzorù. Pomocí generátoru PWM a osciloskopu otestujte rychlost (odezvu na skok) fototranzistoru.
+Napište program, který bude èíst data z obou senzorù (20x za sekundu, èasování èítaèem), posílat je do PC a zobrazovat
+pomocí Data Plotteru (využijte program z minulého týdne).
+
+a) Data plotter není moc vhodný pro vyhodnocení dynamiky fototranzistoru. Na nìj tedy použiji staré dobré LEO.
+Optická závora zapojena podle schématu, kanály osciloskopu pøipojeny na kolektor Q2 (kanál 1) a emitor Q1 (kanál 2).
+Hoooooodnì od oka: Signál z fototranzistoru má 2.4V peak2peak, takže amplitudu 1.2V. Zkusme najít (experimentálnì)
+jeho bandwidth (na nìm bude mít amplituda velikost jen 0.707 pùvodní velikosti). Hledám tedy frekvenci, na které dosáhne
+maximum signálu na kanálu 2 hodnoty `1.2V (DC offset) + 0.7*1.2 = 2.04 V`. </br>
+To nastane pøibližnì na frekvenci 2.4kHz, takže by bylo asi možno hovoøit o šíøce pásma cca 2500 Hz.
+Následují obrázky zachycují mìøené prùbìhy kanálù 1 a 2 osciloskopu pro frekvence 
+  - 500 Hz ... fototranzistor v pohodì stíhá
+  - 1000 Hz ... fototranzistor je dost na hranì
+  - 2400 Hz ... už asi pøíliš rychlé
+
+Frekvence je vždy v levém horním rohu obrázku.
+
+![](week_7/dynamika_500hz.png)
+![](week_7/dynamika_1000hz.png)
+![](week_7/dynamika_2400hz.png)
+
+b) Pro vytvoøení programu staèilo vzít základní program z minulého týdne a provést pár úprav.
+  - Pøidat vlastní `Ticker` pro obsloužení analogových mìøení
+  - Pøidat funkci volanou z interruptu daného Tickeru
+
+Zdrojový kód je v repozitáøi ve složce `${root}/code/week7/main.cpp`,
+rovnìž na mbedu projekt `LPE_dataplotter.`
+
+Ovìøení, že data pøichází pøesnì na 20 hertzích (èasová základna je nastavena tak, aby celý rozsah obrazovky 
+dával právì jednu sekundu. Na obrazovce je viditìlných 20 pøíchozích vzorkù):
+![](week_7/overeni_20hz.png)
+
+Ve výstupu DataPlotteru je èervený kanál signál z fototranzistoru, modrý kanál je signál z NTC.
+Mìøení teploty má pøirozenì výraznì delší èasové konstaty (srovnej s úkolem 4.9 - regulátor teploty, kde se èasová 
+konstanta NTC mìøila v desítkách sekund, zatímco fototranzistor má desetiny milisekund. To je 5 øádù rozdíl).
+Pøesto je i na signálu NTC patrný pomalý pokles, protože jej zahøívám pøiloženými prsty. Signál z fototranzistoru
+odpovídá støídavému zakrývání rukou (minima) a rozvìcení (maxima, tehdy je fototranzistor saturován s Uce cca 100mV).
+
+Senzory prohlašuji za funkèní.
+
+![](week_7/senzory.png)
+
+
+> 7.2 Zprovoznìte vývojový modul s ESP8266 – pøipojte ho pøes USB k PC (nainstalujte pøípadné ovladaèe pro virtuální
+sériový port – èip CH340G), pøipojte se na tento port libovolným terminálovým programem (Hyperterminál, RealTerm
+nebo Putty). Pøipojte se na WiFi Access Point, který modul po zapnutí vytváøí (jméno nìco jako: „TERM-15F130“), ve
+webovském prohlížeèi se Vám otevøe www stránka (je to pøípadnì adresa 192.168.4.1 – esp-terminal.ap) s terminálem.
+Ovìøte pøenos textu (ASCII znakù) obìma smìry – z www terminálu do konzole pøipojené na virtuální sériový port i
+naopak. V nastavení nezvyšujte vysílací výkon, abyste zbyteènì nerušili okolní WiFi sítì.
+V bodì 7.2 je WiFi modul pøipojen pouze k PC pøes USB-micro kabel.
+
+Modul se po pøipojení napájení chová jako access point, žádné další nastavení není potøeba. Stránka s `ESPTerm`em
+se otevírá automaticky po pøipojení, pøípadnì použít IP adresu v zadání. Zaøízení se souèasnì pøipojuje jako COM port,
+v mém pøípadì COM9, pøes který je možné vytvoøit tok dat 
+ve smìru `webová aplikace ESPTerm -> wifi -> ESP modul -> seriová linka -> terminál v PC` i opaèném.
+
+Pøenos jedné vìty je vidìt na následujícím obrázku. Na levém monitoru je webové rozhraní, na pravém monitoru
+jsou spodní dva terminály vázány na COM port 9. Pøenos funguje obìma smìry na nastaveném baudrate 115200 bps.
+
+![](week_7/most_pres_wifi.png)
+
+> 7.3 Pøipojte WiFi modul s ESP8266 k procesoru STM32F042 a tento v mbedu naprogramujte tak, aby vysílal po sériové
+lince data namìøená ze dvou senzorù a zároveò pøijímal pøíkazy zadané v ESPTermu. Data zobrazujte v ESPTermu a
+demonstrujte, že reagují na podnìty (napøíklad fototranzistor snímající okolní osvìtlení, zapnutí - vypnutí LED
+nasmìrované na fototranzistor). LED diodu pøipojenou k mikrokontroléru na nepájivém poli ovládejte pomocí tlaèítek On
+a Off, která si takto pøejmenujete v ESPTerminálu.
+V rámci bodu 7.3 pøipojte WiFi modul k Vašemu nepájivému poli pomocí 4 dodaných kablíkù - napájení 5V, RXD, TXD
+a GND. USB-micro kabel již do WiFi modulu nepøipojujte. Viz Obr. 7.2. Je zbyteèné WiFi modul zasouvat do nepájivého
+pole, které se tak zbyteènì nièí - nevratnì se roztahují kontakty, zvyšuje se odpor propojení.
+
+
+> 7.4 Vytvoøte program, kterým budete demonstrovat použití „ESCAPE“ sekvencí pro práci s ESPTerminálem – mìòte
+barvu tlaèítka v ESPTermu podle toho, jestli na fototranzistor dopadá svìtlo z LED nebo ne (dopadá = zelená, nedopadá -
+èerná). Úkol 7.4 lze snadno odevzdat jakou souèást úkolu 7.3. Stejné zapojení jako v bodì 7.3.
+
+
+
+## Týden 6 - UART a audio aplikace
 Instrukce pro tento týden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283744/mod_resource/content/4/LPE_6_tyden_poznamky_2021_v3.pdf
 
 Tøídy zesilovaèù:
