@@ -87,13 +87,33 @@ V rámci bodu 7.3 pøipojte WiFi modul k Vašemu nepájivému poli pomocí 4 dodaných 
 a GND. USB-micro kabel již do WiFi modulu nepøipojujte. Viz Obr. 7.2. Je zbyteèné WiFi modul zasouvat do nepájivého
 pole, které se tak zbyteènì nièí - nevratnì se roztahují kontakty, zvyšuje se odpor propojení.
 
-**To be done**
-
 > 7.4 Vytvoøte program, kterým budete demonstrovat použití „ESCAPE“ sekvencí pro práci s ESPTerminálem – mìòte
 barvu tlaèítka v ESPTermu podle toho, jestli na fototranzistor dopadá svìtlo z LED nebo ne (dopadá = zelená, nedopadá -
 èerná). Úkol 7.4 lze snadno odevzdat jakou souèást úkolu 7.3. Stejné zapojení jako v bodì 7.3.
 
-**To be done**
+Zdrojový kód je v mbedu pro úsporu èasu ve složce `code/week7/LPE_wifi.cpp`. Základní prostøedí nakonec vypadá takto:
+![](week_7/term_hodne.jpg)
+
+Tlaèítka 1 a 2 (èíslováno zleva) mají stabilní barvu a ovládají LEDku on/off.</br>
+Tlaèítka 3 a 4 zapínají a vypínají pøenášení dat z NTC a z fototranzistoru. 
+Jejich barva je zelená èi èervená podle aktuálního stavu - èervená vypnuto, zelená zapnuto. </br>
+Tlaèítko 5 je pouze pro zobrazování, jeho barva se spojitì mìní mezi èervenou a zelenou
+pro idikaci míry osvìtlení fototranzistoru.
+
+Mìøení probíhá na rezistoru pod fototranzistorem, napìtí je proto rostoucí funkcí intenzity osvìltení.
+Barva se vybírá lineární interpolací
+  - pro napìtí 0mV je hex kód barvy 0xff'00'00 (sytì èervená)
+  - pro napìtí 3300mV je hex kód barvy 0x00'ff'00 (sytì zelená)
+  - pro napìtí U se vypoète zelená složka jako `(int)(sense2 / 3300.0 * 0xff)`, èervená je doplnìk do 256.
+
+Pozor, že nibbly jednotlivých barevných složek jsou prohozené. Escape sequence `"\e]30;4;#f00f00\n\e\\"`
+zapíše do modré složky `0x0`, zelené složky `0xf0` a èervené složky `0x0f`.
+
+**Demonstrace spojitého spektra barev indikátoru osvìtlení**: S klesající intenzitou osvìtlení se indikátor 
+pøesouvá ze zelené pøes hnìdou na èervenou.
+![](week_7/term_vice.jpg)
+![](week_7/term_mene.jpg)
+![](week_7/term_malo.jpg)
 
 
 ## Týden 6 - UART a audio aplikace
