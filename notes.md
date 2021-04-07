@@ -87,11 +87,13 @@ V rámci bodu 7.3 pøipojte WiFi modul k Vašemu nepájivému poli pomocí 4 dodaných 
 a GND. USB-micro kabel již do WiFi modulu nepøipojujte. Viz Obr. 7.2. Je zbyteèné WiFi modul zasouvat do nepájivého
 pole, které se tak zbyteènì nièí - nevratnì se roztahují kontakty, zvyšuje se odpor propojení.
 
+**To be done**
 
 > 7.4 Vytvoøte program, kterým budete demonstrovat použití „ESCAPE“ sekvencí pro práci s ESPTerminálem – mìòte
 barvu tlaèítka v ESPTermu podle toho, jestli na fototranzistor dopadá svìtlo z LED nebo ne (dopadá = zelená, nedopadá -
 èerná). Úkol 7.4 lze snadno odevzdat jakou souèást úkolu 7.3. Stejné zapojení jako v bodì 7.3.
 
+**To be done**
 
 
 ## Týden 6 - UART a audio aplikace
