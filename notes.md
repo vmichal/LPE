@@ -7,6 +7,109 @@ Seznam souèástek s pinout a schematickými znaèkami: https://moodle.fel.cvut.cz/p
 Týdny jsou èíslovány chronologicky, poznámky k nim jsou uvedeny v obráceném poøadí.
 Jako první je tedy uveden poslední týden, scrollováním na konec stránky se èlovìk dostane na týden první.
 
+## Týdny 9+10 - I2C magnetometr a SPI OLED displej
+Instrukce pro tento týden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283750/mod_resource/content/5/LPE_9-10_tyden_poznamky_v1.pdf.
+
+Pozn:
+  - Jednotka 1 Gauss == 100 mikrotesla
+  - Vektor magnetické intenzity zemského pole je v naší oblasti cca 48.5 mikrotesla.
+  - Na OLED displeji je každý pixel "elementární jednotka podsvicování" - spotøeba je pøímo úmìrná poètu svítících
+   bodù
+  - V displeji TFT mají pixely sdílené podsvícení a tak je odbìr relativnì konstantní bez ohledu na zobrazovaný obraz.
+
+> 8.1 Pøipojte k MCU pomocí I2C sbìrnice 3-osý AMR magnetometr MMC5883, nahrajte do MCU dodaný bin soubor a
+sledujte a popište princip komunikace po I2C sbìrnici. Jaký pøíkaz se posílá?
+
+Sbìrnice I2C:
+  - Dva vodièe: data (typicky `SDA`) a hodiny (typicky `SCL`)
+  - Oba signály open drain, dominantní je nula. Vnìjší rezistory na sbìrnici tahají signály nahoru.
+  Jejich velikost spoleènì s parazitní kapacitou vodièù vytváøí pøechodový dìj,
+    jehož rychlost omezuje baudrate sbìrnice.
+  - Multi-slave prostøedí; jeden master øídí komunikaci a generuje hodiny.
+  - Struktura rámce je vidìt níže
+  na obrázku z pulseview: start condition, 7bitù adresy (výbìr pøipojeného zaøízení), 1 bit na výbìr typu
+  rámce (read vs write), 1 bit acknowledge od kontaktovaného zaøízení.
+
+Zachycený a rozebraný rámec z komunikace se senzorem. Zaøízení s adresou 0x30 se zapisuje hodnota 0x10
+do registru 0x08. Senzor pøíkaz pøijímá a všechny tøi bajty potvrzuje dominantní úrovní v ACK slotu:
+![](week_9/i2c_frame.png)
+Tentýž rámec analyzovaný automaticky pomocí nástroje Pulseview a Embedded Logic Analyzer:
+![](week_9/i2c_pulseview.png)
+
+Podle datasheetu senzoru (https://media.digikey.com/pdf/Data%20Sheets/MEMSIC%20PDFs/MMC5883MA_RevC_4--28-17.pdf)
+je 0x8 `Internal control register 0`, hodnota 0x10 odpovídá pøíkazu RESET.
+
+> 8.2 Vytvoøte pomocí dodané „knihovny“ program, který bude namìøené hodnoty magnetického pole B(nT) posílat do PC
+a zobrazovat v terminálu. Jak vypadá vektor magnetického pole v Evropì (velikost, smìr)?
+
+Zdrojový kód je v souboru `code/week9/magnetometr_uloha_8.2.cpp` </br>
+Kód pro odeètení elektrického offsetu mùstkového senzoru je v `code/week9/magnetometr_offset_remove.cpp`
+
+Záznam výpisu do terminálu se stabilním senzorem. Hodnoty jsou v nanoteslách, nejdøíve tøi složky X, Y, Z a poté
+odmocnina ze sumy ètvercù jako modul vektoru magnetické indukce.
+```
+X=9130 Y=26928 Z=34423, Btot=44647.70
+X=9497 Y=27441 Z=34130, Btot=44811.36
+X=9667 Y=27734 Z=34057, Btot=44972.27
+X=9570 Y=27612 Z=34106, Btot=44913.55
+X=9741 Y=27758 Z=34008, Btot=44965.96
+X=9570 Y=28100 Z=33764, Btot=44957.79
+X=9399 Y=28198 Z=33715, Btot=44946.30
+X=9179 Y=28173 Z=33715, Btot=44885.11
+X=8837 Y=28271 Z=33520, Btot=44731.78
+X=8666 Y=28417 Z=33447, Btot=44736.20
+X=8837 Y=28369 Z=33422, Btot=44720.50
+X=8618 Y=28442 Z=33349, Btot=44669.60
+X=8398 Y=28442 Z=33374, Btot=44646.36
+X=8349 Y=28442 Z=33325, Btot=44600.55
+```
+
+Oèekávaná hodnota magnitudy B by mìla být cca 45 uT. Rotací senzoru ve všech smìrech se ukazuje, že bez další kalibrace spadají hodnoty
+do pomìrnì širokého spektra hodnot mezi 35 uT a 60 uT. Následující výpis ukazuje plynulé mìnìní celkové magnitudy pøi rotaci. 
+```
+X=-5541 Y=4516 Z=37744, Btot=38414.93
+X=-4858 Y=4345 Z=38061, Btot=38615.01
+X=-4125 Y=4956 Z=38208, Btot=38748.27
+X=-3393 Y=5200 Z=38549, Btot=39045.84
+X=-3027 Y=5883 Z=38574, Btot=39137.27
+X=-2221 Y=6445 Z=38793, Btot=39387.41
+X=-2075 Y=7031 Z=38769, Btot=39456.00
+X=-1806 Y=7104 Z=38891, Btot=39575.73
+X=-1367 Y=7299 Z=39086, Btot=39785.17
+X=-1123 Y=7397 Z=39111, Btot=39820.18
+X=-1196 Y=7495 Z=39111, Btot=39840.63
+X=-756 Y=7470 Z=39184, Btot=39896.84
+X=-634 Y=7275 Z=39306, Btot=39978.61
+X=-805 Y=7250 Z=39208, Btot=39880.79
+X=-561 Y=7592 Z=39355, Btot=40084.53
+X=-317 Y=7543 Z=39404, Btot=40120.73
+X=-244 Y=7177 Z=39379, Btot=40028.42
+X=-48 Y=7275 Z=39526, Btot=40189.96
+```
+> 8.3 Pøipojte grafický OLED displej pøes SPI sbìrnici, sledujte a popište princip funkce SPI sbìrnice (pro zprovoznìní
+použijte dodaný bin soubor). Jaký pøíkaz se posílá – odpovídá chování displeje?
+
+Zachycený rámec komunikace na SPI, jednou na osciloskopu, jednou analyzováno strojovì pomocí pulseview:
+![](week_9/spi_frame.png)
+![](week_9/spi_pulseview.png)
+Zachycený je pøíkaz 0xA6, na støídaèku s ním se odesílá 0xA7. Podle datasheetu (https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf)
+to jsou pøíkazy pro pøepínání mezi normálním a invertovaným zobrazením.
+
+> 8.4 Vytvoøte pomocí dodané „knihovny“ program, který bude namìøené hodnoty magnetického pole B(nT) zobrazovat
+na OLED displeji.
+
+Relevantní zdrojové kódy jsou ve složce code/week9.
+
+Originální kompas od katedry:
+
+![](week_9/kompas.jpg)
+
+Vlastní výpis na displej:
+
+![](week_9/displej.jpg)
+
+
+
 ## Týdny 7+8 - WiFi a hezèí formátování výstupu
 Instrukce pro tento týden jsou na https://moodle.fel.cvut.cz/pluginfile.php/283748/mod_resource/content/7/LPE_7_tyden_poznamky_v6.pdf
 
@@ -105,6 +208,7 @@ barvu tlaèítka v ESPTermu podle toho, jestli na fototranzistor dopadá svìtlo z L
 Spojení signálových vodièù mezi MCU a wifi modulem (pozor na spojení zemí, napájení WiFi je z 5V
 poblíž USB konektoru na nepájivém poli):
 ![](week_7/schema73.jpg)
+V tomto pøípadì se ještì na komunikaèní vodièe pøidaly rezistory 470 ohm na RX MCU a 47 ohm na TX MCU 
 
 Zdrojový kód je v mbedu pro úsporu èasu ve složce `${root}/code/week7/LPE_wifi.cpp`.
 Základní uživatelské prostøedí nakonec vypadá takto.
